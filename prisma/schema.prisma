@@ -1,0 +1,103 @@
+// Owned by Agent 0. Other agents: request changes in your HANDOFF file.
+// Participants are identified only by participant_hash. Never add email/name/image columns.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Choice {
+  maintain
+  swerve_left
+  swerve_right
+
+  @@map("choice")
+}
+
+enum QuestionOrder {
+  U_first
+  K_first
+
+  @@map("question_order")
+}
+
+// Prisma identifiers can't start with a digit, so the TS values carry an `age_`
+// prefix; the Postgres enum stores the spec's values ("18_24", ...).
+enum AgeRange {
+  age_18_24         @map("18_24")
+  age_25_34         @map("25_34")
+  age_35_44         @map("35_44")
+  age_45_54         @map("45_54")
+  age_55_64         @map("55_64")
+  age_65_plus       @map("65_plus")
+  prefer_not_to_say
+
+  @@map("age_range")
+}
+
+enum YesNoPnts {
+  yes
+  no
+  prefer_not_to_say
+
+  @@map("yes_no_pnts")
+}
+
+enum EthicsCoursework {
+  none
+  some
+  substantial
+  prefer_not_to_say
+
+  @@map("ethics_coursework")
+}
+
+model Participant {
+  id                   String            @id @default(cuid())
+  participantHash      String            @unique @map("participant_hash")
+  consentedAt          DateTime          @map("consented_at") @db.Timestamptz(3)
+  startedAt            DateTime          @map("started_at") @db.Timestamptz(3)
+  ageRange             AgeRange?         @map("age_range")
+  // ISO-3166 alpha-2 code or "prefer_not_to_say" (src/config/countries.ts)
+  country              String?
+  drives               YesNoPnts?
+  ethicsCoursework     EthicsCoursework? @map("ethics_coursework")
+  demographicsAt       DateTime?         @map("demographics_at") @db.Timestamptz(3)
+  comprehensionAnswers Json?             @map("comprehension_answers")
+  comprehensionPassed  Boolean?          @map("comprehension_passed")
+  primerCompletedAt    DateTime?         @map("primer_completed_at") @db.Timestamptz(3)
+  // Generated once at creation (Fisher–Yates); never reshuffled.
+  scenarioOrder        String[]          @map("scenario_order")
+  completedAt          DateTime?         @map("completed_at") @db.Timestamptz(3)
+
+  responses Response[]
+
+  @@map("participants")
+}
+
+model Response {
+  id                String        @id @default(cuid())
+  participantId     String        @map("participant_id")
+  participant       Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  scenarioId        String        @map("scenario_id")
+  // 0-based index into participant.scenarioOrder
+  position          Int
+  questionOrder     QuestionOrder @map("question_order")
+  utilitarianChoice Choice?       @map("utilitarian_choice")
+  kantianChoice     Choice?       @map("kantian_choice")
+  ownChoice         Choice?       @map("own_choice")
+  confidence        Int?
+  firstServedAt     DateTime      @map("first_served_at") @db.Timestamptz(3)
+  servedAt          DateTime      @map("served_at") @db.Timestamptz(3)
+  answeredAt        DateTime?     @map("answered_at") @db.Timestamptz(3)
+
+  // CHECK constraints (confidence 1–5, position >= 0, answered rows have both
+  // choices) live in the migration SQL; Prisma schema can't express them.
+  @@unique([participantId, scenarioId])
+  @@unique([participantId, position])
+  @@map("responses")
+}

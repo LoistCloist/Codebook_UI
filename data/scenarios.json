@@ -1,0 +1,20 @@
+[
+  {
+    "id": "s01",
+    "title": "[PLACEHOLDER] Pedestrians ahead",
+    "text": "[PLACEHOLDER] A self-driving car's brakes fail. Ahead are three pedestrians crossing on a red light. Swerving left would hit one pedestrian crossing legally; swerving right would hit a barrier, seriously injuring the car's single passenger.",
+    "answerKey": {
+      "utilitarian": ["swerve_right"],
+      "kantian": ["maintain"]
+    }
+  },
+  {
+    "id": "s02",
+    "title": "[PLACEHOLDER] Cyclist and child",
+    "text": "[PLACEHOLDER] A self-driving car must choose between continuing toward a cyclist, swerving left toward a child who ran into the road, or swerving right into a parked, empty van at speed.",
+    "answerKey": {
+      "utilitarian": ["swerve_right"],
+      "kantian": ["maintain", "swerve_right"]
+    }
+  }
+]
