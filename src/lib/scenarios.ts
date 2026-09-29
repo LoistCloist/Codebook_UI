@@ -9,6 +9,11 @@ const TheoryKey = z
   .min(1, "answerKey arrays need at least one correct choice")
   .refine((a) => new Set(a).size === a.length, "answerKey arrays must not repeat a choice");
 
+const Line = z.string().trim().min(1);
+
+/** Outcome text for each available action, e.g. "kills 1 cyclist on the left". */
+const ScenarioActions = z.strictObject({ maintain: Line, swerve_left: Line, swerve_right: Line });
+
 export const ScenarioSchema = z.strictObject({
   id: z.string().regex(/^[A-Za-z0-9_-]+$/, "id may only contain letters, digits, _ and -"),
   title: z.string().trim().min(1),
@@ -20,7 +25,12 @@ export const ScenarioSchema = z.strictObject({
     .optional(),
   /** Alt text for the image; the page falls back to the title when absent. */
   imageAlt: z.string().trim().min(1).optional(),
-  answerKey: z.strictObject({ utilitarian: TheoryKey, kantian: TheoryKey }),
+  /** Optional structured detail, rendered as lists under the text. */
+  world: z.array(Line).min(1).optional(),
+  actions: ScenarioActions.optional(),
+  features: z.array(Line).min(1).optional(),
+  /** Needed for scoring; scenarios without one are excluded from agreement (startup warns). */
+  answerKey: z.strictObject({ utilitarian: TheoryKey, kantian: TheoryKey }).optional(),
 });
 
 export const ScenariosFileSchema = z
@@ -36,7 +46,16 @@ export const ScenariosFileSchema = z
 
 export type Scenario = z.infer<typeof ScenarioSchema>;
 /** The only scenario shape that may reach the client (no answerKey). */
-export type PublicScenario = { id: string; title: string; text: string; image?: string; imageAlt?: string };
+export type PublicScenario = {
+  id: string;
+  title: string;
+  text: string;
+  image?: string;
+  imageAlt?: string;
+  world?: string[];
+  actions?: z.infer<typeof ScenarioActions>;
+  features?: string[];
+};
 
 export const SCENARIOS_PATH = path.join(process.cwd(), "data", "scenarios.json");
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -88,10 +107,18 @@ export function getScenario(id: string): Scenario | undefined {
   return cache!.byId.get(id);
 }
 
+/** IDs of scenarios that have no answerKey yet. */
+export function scenariosMissingKeys(list: Scenario[] = getScenarios()): string[] {
+  return list.filter((s) => !s.answerKey).map((s) => s.id);
+}
+
 export function toPublicScenario(s: Scenario): PublicScenario {
   // Explicit allow-list: answerKey (and any future private field) never reaches the client.
   const pub: PublicScenario = { id: s.id, title: s.title, text: s.text };
   if (s.image !== undefined) pub.image = s.image;
   if (s.imageAlt !== undefined) pub.imageAlt = s.imageAlt;
+  if (s.world !== undefined) pub.world = s.world;
+  if (s.actions !== undefined) pub.actions = s.actions;
+  if (s.features !== undefined) pub.features = s.features;
   return pub;
 }

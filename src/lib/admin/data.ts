@@ -9,6 +9,9 @@ export async function loadAdminData(): Promise<{ participants: AdminParticipant[
     include: { responses: { orderBy: { position: "asc" } } },
     orderBy: { id: "asc" },
   });
-  const keys: AnswerKeys = Object.fromEntries(getScenarios().map((s) => [s.id, s.answerKey]));
+  // Scenarios without an answerKey are left out, so they aren't scored.
+  const keys: AnswerKeys = Object.fromEntries(
+    getScenarios().flatMap((s) => (s.answerKey ? [[s.id, s.answerKey]] : [])),
+  );
   return { participants, keys };
 }

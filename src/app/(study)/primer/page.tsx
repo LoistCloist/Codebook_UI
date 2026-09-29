@@ -28,6 +28,13 @@ export default async function PrimerPage() {
           <p>{study.primer.kantianEthics}</p>
         </section>
       </div>
+      <p className="mt-4">
+        The full rules for both theories are in the{" "}
+        <a href={study.rulebookPdf} target="_blank" rel="noopener">
+          ethical rulebook (PDF, opens in a new tab)
+        </a>
+        . You can also open it from every scenario.
+      </p>
 
       <h2 className="mb-2 mt-8 text-xl font-semibold">Check your understanding</h2>
       <p className="mb-4 text-muted">Two quick questions about the descriptions above.</p>

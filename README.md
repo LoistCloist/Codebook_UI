@@ -95,8 +95,11 @@ Admin access additionally requires Google to report the email as verified.
 
 ## Scenarios and study text
 
-Scenarios live in `data/scenarios.json` (2 placeholders ship with the repo). The file is validated
-with zod when the server starts; if it's malformed, startup fails with every problem listed.
+Scenarios live in `data/scenarios.json`. The file is validated with zod when the server starts; if
+it's malformed, startup fails with every problem listed. It holds the 50 assessment scenarios
+(`CATA_S003` … `CATA_S197`, zero-padded from the codebook's `CATA_S3` … `CATA_S197`) with their
+answer keys. Edit it directly. `public/rulebook.pdf` is the Utilitarian/Kantian rulebook, linked from
+the primer and every scenario.
 
 ```json
 {
@@ -105,6 +108,9 @@ with zod when the server starts; if it's malformed, startup fails with every pro
   "text": "string (the scenario as written)",
   "image": "/scenarios/s01.png",
   "imageAlt": "Short description of the image, for screen readers",
+  "world": ["1 cyclist is directly ahead…", "…"],
+  "actions": { "maintain": "kills 1 cyclist ahead", "swerve_left": "…", "swerve_right": "…" },
+  "features": ["Swerve left/right = active redirection", "…"],
   "answerKey": {
     "utilitarian": ["maintain"],
     "kantian": ["swerve_left", "swerve_right"]
@@ -116,8 +122,13 @@ with zod when the server starts; if it's malformed, startup fails with every pro
   by ID as plain text, so `s10` would sort before `s2`.
 - `image` (optional): a file under `public/scenarios/`, referenced as `/scenarios/<file>`. The file must exist.
 - `imageAlt` (optional): alt text for the image. Without it, the scenario title is used.
+- `world`, `actions`, `features` (optional): shown under the text as "World state", "Actions and
+  outcomes" (one line per action, labelled like the answer buttons) and "Structurally relevant moral
+  features". `actions` needs all three choices.
 - `answerKey`: arrays, because more than one action can be correct. Values: `maintain`,
-  `swerve_left`, `swerve_right`. The answer key is server-only and never sent to the browser.
+  `swerve_left`, `swerve_right`. The answer key is server-only and never sent to the browser. It's
+  optional so a scenario can be shown before it's graded, but a scenario without one is left out of
+  agreement scores (its correct/incorrect cells export blank) and startup logs a warning listing it.
 - **Don't remove or rename a scenario after data collection starts.** Each participant's order is
   stored once and never reshuffled; a missing ID stops that participant with an error.
 

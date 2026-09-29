@@ -22,7 +22,8 @@ export const study = {
   consent: {
     purpose:
       "[PLACEHOLDER] This study asks how people apply utilitarian and Kantian ethics to dilemmas faced by self-driving cars.",
-    estimatedMinutes: 15,
+    // [PLACEHOLDER] 50 scenarios × 2 questions; confirm against a pilot run.
+    estimatedMinutes: 40,
     anonymity:
       "[PLACEHOLDER] Your responses are anonymous. We sign you in with Google only to make sure each person responds once; we do not store your email address, name or profile picture.",
     rightToStop:
@@ -59,6 +60,9 @@ export const study = {
       ],
     },
   ],
+
+  /** Rulebook describing both frameworks, linked from the primer and every scenario (public/rulebook.pdf). */
+  rulebookPdf: "/rulebook.pdf",
 
   debrief: {
     heading: "Thank you for taking part",

@@ -8,6 +8,7 @@ import {
   getScenarios,
   loadScenariosFile,
   parseScenarios,
+  scenariosMissingKeys,
   toPublicScenario,
   type Scenario,
 } from "@/lib/scenarios";
@@ -19,6 +20,8 @@ const valid = (over: Partial<Scenario> = {}) => ({
   answerKey: { utilitarian: ["maintain"], kantian: ["swerve_left", "swerve_right"] },
   ...over,
 });
+
+const ACTIONS = { maintain: "kills 2 ahead", swerve_left: "kills 1 on the left", swerve_right: "kills 1 passenger" };
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "scenarios-test-"));
 afterAll(() => fs.rmSync(tmp, { recursive: true, force: true }));
@@ -41,6 +44,14 @@ describe("scenario loader", () => {
     expect(parseScenarios([valid(), valid({ id: "s02", image: "/scenarios/s02.png" })])).toHaveLength(2);
   });
 
+  it("accepts scenarios without an answerKey and reports them as missing keys", () => {
+    const unkeyed: Record<string, unknown> = valid({ id: "s02" });
+    delete unkeyed.answerKey;
+    const list = parseScenarios([valid(), unkeyed]);
+    expect(list[1].answerKey).toBeUndefined();
+    expect(scenariosMissingKeys(list)).toEqual(["s02"]);
+  });
+
   it("throws on a file that isn't JSON", () => {
     expect(() => loadScenariosFile(writeTmp("bad.json", "[{ id: s01"))).toThrow(/not valid JSON/);
   });
@@ -61,6 +72,12 @@ describe("scenario loader", () => {
     ["image outside /scenarios/", [valid({ image: "/etc/passwd" })]],
     ["image path traversal", [valid({ image: "/scenarios/../x.png" })]],
     ["blank title", [valid({ title: "  " })]],
+    ["empty world list", [valid({ world: [] })]],
+    ["blank world line", [valid({ world: [" "] })]],
+    ["empty features list", [valid({ features: [] })]],
+    ["actions missing a choice", [{ ...valid(), actions: { maintain: "a", swerve_left: "b" } }]],
+    ["actions with an unknown choice", [{ ...valid(), actions: { ...ACTIONS, brake: "d" } }]],
+    ["answerKey with only one theory", [{ ...valid(), answerKey: { utilitarian: ["maintain"] } }]],
   ])("rejects %s", (_name, raw) => {
     expect(() => parseScenarios(raw)).toThrow(/malformed/);
   });
@@ -95,5 +112,20 @@ describe("scenario loader", () => {
     expect(toPublicScenario(parseScenarios([valid()])[0])).not.toHaveProperty("imageAlt");
     expect(() => parseScenarios([valid({ imageAlt: "   " })])).toThrow(/malformed/);
     expect(() => parseScenarios([valid({ imageAlt: 5 as unknown as string })])).toThrow(/malformed/);
+  });
+
+  it("passes world, actions and features through to the public scenario", () => {
+    const pub = toPublicScenario(
+      parseScenarios([valid({ world: ["1 cyclist ahead"], actions: ACTIONS, features: ["Left decreases deaths"] })])[0],
+    );
+    expect(pub).toEqual({
+      id: "s01",
+      title: "T",
+      text: "Text",
+      world: ["1 cyclist ahead"],
+      actions: ACTIONS,
+      features: ["Left decreases deaths"],
+    });
+    expect(pub).not.toHaveProperty("answerKey");
   });
 });

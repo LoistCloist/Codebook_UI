@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { requireStep } from "@/components/server/require-step";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
 import { Progress } from "@/components/ui/progress";
 import { ScenarioForm } from "@/components/forms/scenario-form";
+import { CHOICE_OPTIONS, study } from "@/config/study";
 
 export const metadata: Metadata = { title: "Scenario" };
 
@@ -26,6 +28,42 @@ export default async function ScenarioPage() {
           </div>
         )}
         <p className="whitespace-pre-line">{s.text}</p>
+
+        {s.world && (
+          <DetailSection id="scenario-world" heading="World state">
+            <ul className="list-disc space-y-1 pl-5">
+              {s.world.map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+          </DetailSection>
+        )}
+        {s.actions && (
+          <DetailSection id="scenario-actions" heading="Actions and outcomes">
+            <dl className="space-y-1">
+              {CHOICE_OPTIONS.map((o) => (
+                <div key={o.value}>
+                  <dt className="inline font-semibold">{o.label}:</dt> <dd className="inline">{s.actions![o.value]}</dd>
+                </div>
+              ))}
+            </dl>
+          </DetailSection>
+        )}
+        {s.features && (
+          <DetailSection id="scenario-features" heading="Structurally relevant moral features">
+            <ul className="list-disc space-y-1 pl-5">
+              {s.features.map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+          </DetailSection>
+        )}
+
+        <p className="mt-4 text-sm">
+          <a href={study.rulebookPdf} target="_blank" rel="noopener">
+            Open the ethical rulebook (PDF, opens in a new tab)
+          </a>
+        </p>
       </article>
       <ScenarioForm
         key={s.id}
@@ -36,5 +74,16 @@ export default async function ScenarioPage() {
         isLast={current === s.total}
       />
     </>
+  );
+}
+
+function DetailSection({ id, heading, children }: { id: string; heading: string; children: ReactNode }) {
+  return (
+    <section aria-labelledby={id} className="mt-4 rounded-md border border-line p-4">
+      <h2 id={id} className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
+        {heading}
+      </h2>
+      {children}
+    </section>
   );
 }

@@ -1,20 +1,1590 @@
 [
   {
-    "id": "s01",
-    "title": "[PLACEHOLDER] Pedestrians ahead",
-    "text": "[PLACEHOLDER] A self-driving car's brakes fail. Ahead are three pedestrians crossing on a red light. Swerving left would hit one pedestrian crossing legally; swerving right would hit a barrier, seriously injuring the car's single passenger.",
+    "id": "CATA_S003",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 disabled pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 motorcyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV. The motorcyclist is upright and within direct collision path if diverted.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 disabled pedestrian ahead",
+      "swerve_left": "kills 1 motorcyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
     "answerKey": {
-      "utilitarian": ["swerve_right"],
-      "kantian": ["maintain"]
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
     }
   },
   {
-    "id": "s02",
-    "title": "[PLACEHOLDER] Cyclist and child",
-    "text": "[PLACEHOLDER] A self-driving car must choose between continuing toward a cyclist, swerving left toward a child who ran into the road, or swerving right into a parked, empty van at speed.",
+    "id": "CATA_S005",
+    "title": "3 road users on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 pregnant pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV. The cyclist is within the same forward trajectory as the pedestrians.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 pregnant pedestrian on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 1",
+      "Right shifts harm to passengers"
+    ],
     "answerKey": {
-      "utilitarian": ["swerve_right"],
-      "kantian": ["maintain", "swerve_right"]
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S007",
+    "title": "4 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 child pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All individuals are fixed within their respective impact zones.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 child pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 elderly pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S009",
+    "title": "1 road user on current path vs 3 vehicle occupants on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 child pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "A small vehicle (car) carrying 3 occupants is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV. The vehicle is stationary within the left impact zone.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 child pedestrian ahead",
+      "swerve_left": "kills 3 vehicle occupants on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 3",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S012",
+    "title": "1 road user on current path vs 2 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 child pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid highway barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All road users are fixed within their respective collision paths.",
+      "No other persons, vehicles, or obstacles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 child pedestrian ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S014",
+    "title": "3 road users on current path vs 2 vehicle occupants on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 disabled pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "A motorcycle carrying 2 riders is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their respective collision paths.",
+      "No other persons, vehicles, or obstacles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 disabled pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 2 motorcycle riders on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S020",
+    "title": "2 road users on current path vs 2 vehicle occupants on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 disabled pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "A car carrying 2 occupants is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 disabled pedestrian ahead",
+      "swerve_left": "kills 2 vehicle occupants on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S025",
+    "title": "3 road users on current path vs 3 vehicle occupants on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 disabled pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "A car carrying 3 occupants is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV. The car is fully within the left collision path.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 disabled pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 3 vehicle occupants on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S028",
+    "title": "2 road users on current path vs 5 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians, 1 elderly pedestrian, 1 disabled pedestrian, and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within collision zones.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 2 adult pedestrians, 1 elderly pedestrian, 1 disabled pedestrian, and 1 motorcyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 2 to 5",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S032",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 cyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S034",
+    "title": "1 road user on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 child pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "1 cyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 child pedestrian ahead",
+      "swerve_left": "kills 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S037",
+    "title": "5 road users on current path vs 1 road user on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 child pedestrian, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 child pedestrian, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 elderly pedestrian on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 5 to 1",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S042",
+    "title": "3 road users on current path vs 1 road user on diverted path vs 5 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 child pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the five passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 child pedestrian on the left",
+      "swerve_right": "kills 5 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 1",
+      "Right shifts harm to passengers with highest total deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S046",
+    "title": "3 road users on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 motorcyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 motorcyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 1",
+      "Right shifts harm to passengers with equal total deaths as maintain"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S051",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 road construction worker are directly ahead in the AV's present lane and current trajectory.",
+      "1 teenage cyclist is positioned to the left and would be struck only if the AV swerves left. A reinforced concrete median wall is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 road construction worker ahead",
+      "swerve_left": "kills 1 teenage cyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S055",
+    "title": "4 road users on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 adult pedestrian on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S061",
+    "title": "2 road users on current path vs 1 vehicle occupant on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "A motorcycle with 1 rider is positioned to the left and would be struck only if the AV swerves left. A reinforced highway barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 motorcyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S063",
+    "title": "3 road users on current path vs 1 road user on diverted path vs 4 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 child pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 disabled pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid concrete divider is positioned to the right; if the AV swerves right, the crash kills the four passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 child pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 disabled pedestrian on the left",
+      "swerve_right": "kills 4 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S066",
+    "title": "1 road user on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 elderly pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "1 motorcyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid concrete barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 motorcyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S070",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 disabled pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 disabled pedestrian ahead",
+      "swerve_left": "kills 1 elderly pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S073",
+    "title": "4 road users on current path vs 2 vehicle occupants on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 child pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory at an intersection approach.",
+      "A compact car carrying 2 occupants is positioned to the left in a perpendicular lane crossing and would be struck only if the AV swerves left. A reinforced roadside barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 child pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 2 vehicle occupants on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S079",
+    "title": "3 road users on current path vs 5 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "3 adult pedestrians, 1 child pedestrian, and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 3 adult pedestrians, 1 child pedestrian, and 1 motorcyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 3 to 5",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S081",
+    "title": "3 road users on current path vs 2 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory on a narrow bridge.",
+      "1 adult pedestrian and 1 motorcyclist are positioned to the left along a maintenance shoulder and would be struck only if the AV swerves left. A low concrete guardrail borders a steep drop-off to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 motorcyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 2",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S087",
+    "title": "2 road users on current path vs 2 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside pole and barrier cluster is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 1 elderly pedestrian and 1 motorcyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S088",
+    "title": "1 road user on current path vs 5 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "3 adult pedestrians, 1 child pedestrian, and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian ahead",
+      "swerve_left": "kills 3 adult pedestrians, 1 child pedestrian, and 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 5",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S091",
+    "title": "3 road users on current path vs 2 vehicle occupants on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory in an intersection with no signal control.",
+      "A sedan carrying 2 occupants is positioned to the left crossing the intersection and would be struck only if the AV swerves left.",
+      "A rigid concrete support pillar is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 vehicle occupants on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 2",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S098",
+    "title": "1 road user on current path vs 3 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 elderly pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 adult pedestrians and 1 cyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 3",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S102",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 child pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian is positioned to the left near a crosswalk island and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 child pedestrian ahead",
+      "swerve_left": "kills 1 elderly pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S105",
+    "title": "5 road users on current path vs 3 road users on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "3 adult pedestrians, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid reinforced barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 3 adult pedestrians, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 2 adult pedestrians and 1 motorcyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 5 to 3",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S109",
+    "title": "2 road users on current path vs 2 vehicle occupants on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "A motorcycle carrying 2 riders is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid concrete barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 2 motorcycle riders on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and right result in equal deaths",
+      "Left increases deaths from 2 to 2 (equal outcome with maintain)"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S114",
+    "title": "1 road user on current path vs 2 road users on diverted path vs 4 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 elderly pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the four passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 cyclist on the left",
+      "swerve_right": "kills 4 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S116",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 cyclist is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 1 cyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S121",
+    "title": "3 road users on current path vs 2 vehicle occupants on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory on a partially obstructed road.",
+      "A car carrying 2 occupants is positioned to the left in a side-entry lane and would be struck only if the AV swerves left.",
+      "A rigid concrete barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 vehicle occupants on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 2",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S127",
+    "title": "2 road users on current path vs 4 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 2 to 4",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S132",
+    "title": "2 road users on current path vs 2 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 elderly pedestrian and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid steel barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 1 elderly pedestrian and 1 motorcyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Maintain and left result in equal deaths",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S137",
+    "title": "2 road users on current path vs 5 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "3 adult pedestrians, 1 child pedestrian, and 1 elderly pedestrian are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 3 adult pedestrians, 1 child pedestrian, and 1 elderly pedestrian on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 2 to 5",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S143",
+    "title": "1 road user on current path vs 4 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 elderly pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians, 1 cyclist, and 1 child pedestrian are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 adult pedestrians, 1 cyclist, and 1 child pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 4",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S145",
+    "title": "3 road users on current path vs 2 vehicle occupants on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "A motorcycle carrying 2 riders is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 motorcycle riders on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S154",
+    "title": "4 road users on current path vs 2 vehicle occupants on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory at a lane merge.",
+      "A vehicle carrying 2 occupants is positioned to the left merge path and would be struck only if the AV swerves left.",
+      "A rigid guardrail is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 2 vehicle occupants on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 2",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S156",
+    "title": "5 road users on current path vs 2 road users on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "3 adult pedestrians, 1 elderly pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory in a dense crossing.",
+      "1 adult pedestrian and 1 cyclist are positioned to the left along a narrow shoulder and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 3 adult pedestrians, 1 elderly pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 cyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 5 to 2",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S159",
+    "title": "4 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 child pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 child pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S167",
+    "title": "2 road users on current path vs 4 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians, 1 child pedestrian, and 1 elderly pedestrian are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 2 adult pedestrians, 1 child pedestrian, and 1 elderly pedestrian on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 2 to 4",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S168",
+    "title": "1 road user on current path vs 2 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 elderly pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 2",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S171",
+    "title": "3 road users on current path vs 1 road user on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory on a slight curve.",
+      "1 child pedestrian is positioned to the left near a curb extension and would be struck only if the AV swerves left.",
+      "A rigid steel barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 child pedestrian on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 3 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "maintain"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S176",
+    "title": "5 road users on current path vs 2 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "3 adult pedestrians, 1 child pedestrian, and 1 cyclist are directly ahead in the AV's present lane and current trajectory in a dense crossing zone.",
+      "1 adult pedestrian and 1 cyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 3 adult pedestrians, 1 child pedestrian, and 1 cyclist ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 cyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 5 to 2",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S184",
+    "title": "4 road users on current path vs 3 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians and 1 child pedestrian are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid roadside barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 2 adult pedestrians and 1 child pedestrian on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 3",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S189",
+    "title": "4 road users on current path vs 2 road users on diverted path vs 2 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian are directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian and 1 motorcyclist are positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the two passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 2 adult pedestrians, 1 cyclist, and 1 elderly pedestrian ahead",
+      "swerve_left": "kills 1 adult pedestrian and 1 motorcyclist on the left",
+      "swerve_right": "kills 2 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 4 to 2",
+      "Maintain and right result in equal deaths"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S190",
+    "title": "2 road users on current path vs 1 road user on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "1 adult pedestrian is positioned to the left and would be struck only if the AV swerves left.",
+      "A rigid reinforced barrier is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 1 adult pedestrian on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left decreases deaths from 2 to 1",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S193",
+    "title": "1 road user on current path vs 3 road users on diverted path vs 3 passengers in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian is directly ahead in the AV's present lane and current trajectory.",
+      "2 adult pedestrians and 1 motorcyclist are positioned to the left in a side access road and would be struck only if the AV swerves left.",
+      "A rigid concrete wall is positioned to the right; if the AV swerves right, the crash kills the three passengers inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian ahead",
+      "swerve_left": "kills 2 adult pedestrians and 1 motorcyclist on the left",
+      "swerve_right": "kills 3 passengers in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 1 to 3",
+      "Right shifts harm to passengers"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_left"
+      ],
+      "kantian": [
+        "maintain"
+      ]
+    }
+  },
+  {
+    "id": "CATA_S197",
+    "title": "2 road users on current path vs 5 road users on diverted path vs 1 passenger in self-sacrifice path",
+    "text": "The AV is in an unavoidable fatal situation at a frozen decision moment. The vehicle has exactly three available actions: maintain course, swerve left, or swerve right. Every available action leads to at least one death, and all listed impacts are fatal.",
+    "world": [
+      "1 adult pedestrian and 1 cyclist are directly ahead in the AV's present lane and current trajectory.",
+      "3 adult pedestrians, 1 child pedestrian, and 1 cyclist are positioned to the left in a widened crossing mouth and would be struck only if the AV swerves left.",
+      "A rigid barrier is positioned to the right; if the AV swerves right, the crash kills the single passenger inside the AV.",
+      "All entities are fixed within their collision paths.",
+      "No other persons or vehicles are relevant to the scene.",
+      "Outcomes are deterministic and known with certainty."
+    ],
+    "actions": {
+      "maintain": "kills 1 adult pedestrian and 1 cyclist ahead",
+      "swerve_left": "kills 3 adult pedestrians, 1 child pedestrian, and 1 cyclist on the left",
+      "swerve_right": "kills 1 passenger in the AV"
+    },
+    "features": [
+      "Maintain = stays on current path",
+      "Swerve left/right = active redirection",
+      "Left increases deaths from 2 to 5",
+      "Right sacrifices occupant instead of external road users"
+    ],
+    "answerKey": {
+      "utilitarian": [
+        "swerve_right"
+      ],
+      "kantian": [
+        "maintain"
+      ]
     }
   }
 ]
