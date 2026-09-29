@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/*
+ * Neutral light theme. All text/background pairs below meet WCAG AA:
+ *   ink #1f2937 on #ffffff ≈ 14.7:1, muted #4b5563 on #ffffff ≈ 7.6:1,
+ *   white on accent #1d4ed8 ≈ 6.7:1, danger #b91c1c on #ffffff ≈ 6.5:1.
+ */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --color-page: #f9fafb;
+  --color-surface: #ffffff;
+  --color-ink: #1f2937;
+  --color-muted: #4b5563;
+  --color-line: #d1d5db;
+  --color-accent: #1d4ed8;
+  --color-accent-strong: #1e3a8a;
+  --color-accent-soft: #eff6ff;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fef2f2;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Always-visible focus indicator (3:1+ against page and surface). */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover {
+  color: var(--color-accent-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
