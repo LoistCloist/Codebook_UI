@@ -8,6 +8,7 @@ export default defineConfig({
     seed: "tsx --conditions=react-server prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Migrations need a direct (non-transaction-pooled) connection on hosts like Supabase.
+    url: process.env["DIRECT_URL"] || process.env["DATABASE_URL"],
   },
 });
