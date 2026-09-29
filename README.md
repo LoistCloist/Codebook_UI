@@ -65,6 +65,10 @@ is missing or malformed):
 | `NEXTAUTH_URL` | The site's origin, e.g. `http://localhost:3000`. Write routes reject requests whose `Origin` differs. |
 | `PARTICIPANT_HASH_SECRET` | At least 32 characters: `openssl rand -hex 32`. **Never change it after data collection starts**, or returning participants get new hashes and could respond twice. Back it up. |
 | `ADMIN_EMAILS` | Comma-separated Google account emails allowed into `/admin` (case-insensitive). |
+| `DIRECT_URL` | Production only: direct/session connection for `prisma migrate` (falls back to `DATABASE_URL`). |
+| `DATABASE_POOL_MAX` | Optional: connections per server instance (default 3 in production, 10 otherwise). |
+| `DATABASE_SSL_CA` | Optional: the database's root CA (PEM). Enables verified TLS; don't also put `sslmode` in `DATABASE_URL`. |
+| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Optional: shared rate-limit store for serverless/multi-instance hosts. Blank = in-memory. |
 
 ## Google OAuth setup
 
@@ -184,15 +188,20 @@ formula injection.
 
 ## Deploy
 
-Any Node 22 host plus a managed PostgreSQL (Neon, Supabase, RDS, Cloud SQL, …) works.
+**Recommended: Vercel + Supabase.** Follow the step-by-step checklist in
+[`docs/deploy-vercel.md`](docs/deploy-vercel.md). It covers the database, the shared rate
+limiter, Vercel settings, Google OAuth for production, a smoke test and a launch checklist.
 
-1. Create the production database and set `DATABASE_URL` (use SSL if your provider requires it,
-   e.g. `?sslmode=require`).
-2. Set every variable from the table above on the host. Use **new** secrets for production,
-   `NEXTAUTH_URL=https://your-domain`, and keep `PARTICIPANT_HASH_SECRET` fixed (and backed up) for
-   the whole study. `TEST_DATABASE_URL` isn't needed in production.
-3. Add the production origin and `https://your-domain/api/auth/callback/google` to the Google OAuth
-   client, and publish the consent screen.
+Any other Node 22 host with managed PostgreSQL works too:
+
+1. Create the production database. Set `DATABASE_URL` (pooled, if the provider has a pooler) and,
+   for migrations, `DIRECT_URL`. For verified TLS, set `DATABASE_SSL_CA` to the provider's root CA
+   and leave `sslmode` out of `DATABASE_URL`.
+2. Set every variable from the table above. Use **new** secrets for production,
+   `NEXTAUTH_URL=https://your-domain`, and keep `PARTICIPANT_HASH_SECRET` fixed (and backed up)
+   for the whole study. `TEST_DATABASE_URL` isn't needed in production.
+3. Add the production origin and `https://your-domain/api/auth/callback/google` to the Google
+   OAuth client, and publish the consent screen.
 4. Build and start:
    ```bash
    npm ci
@@ -200,24 +209,20 @@ Any Node 22 host plus a managed PostgreSQL (Neon, Supabase, RDS, Cloud SQL, …)
    npm run build
    npm start                     # listens on $PORT (default 3000)
    ```
-5. **Never run the seed in production** (it refuses when `NODE_ENV=production`).
-6. Run a single instance (see the rate-limit note below), behind HTTPS.
+5. **Never run the seed in production.** It refuses when `NODE_ENV=production`.
+6. On hosts that expose tables through an automatic API (Supabase's Data API, for example),
+   disable it. The migrations also enable row-level security with no policies, which blocks
+   those APIs while the app, as table owner, is unaffected.
 
-**Example: Vercel.** Import the repo, set the environment variables in the project settings, and
-set the build command to `prisma migrate deploy && next build` (or run `npx prisma migrate deploy`
-from your machine against the production DB before each deploy). `npm ci` runs `prisma generate`
-through `postinstall`. `data/scenarios.json` is included in the serverless bundle via
-`outputFileTracingIncludes` in `next.config.ts`. Serverless functions run as many instances, so
-plug in a shared rate-limit store (below), and use your provider's pooled connection string for
-`DATABASE_URL`.
+### Rate limiting
 
-### Rate-limit caveat
-
-Write endpoints are limited to 10 writes per minute per participant by an **in-memory** sliding
-window (`src/lib/rate-limit.ts`). This works for a single long-running server process. With several
-instances or serverless functions, each has its own counter, so the limit is not shared. For
-multi-instance deployments, replace the implementation behind the same `rateLimit(key)` interface
-with a shared store such as Upstash Redis (`@upstash/ratelimit`).
+Write endpoints are limited to 10 writes per minute per participant (`src/lib/rate-limit.ts`).
+With `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` set, the sliding window is shared across
+all instances through Upstash Redis. Without them, it falls back to an **in-memory** window per
+server process. That's fine for local development and single-server hosts, but on serverless hosts
+each instance counts separately, and the app logs a startup warning in production. If Upstash is
+unreachable, the limiter lets requests through (fail open). The limit is defence in depth: one
+response per person is enforced by the database, not by the limiter.
 
 ## Privacy and security notes
 
