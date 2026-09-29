@@ -1,13 +1,24 @@
 "use server";
 
-// Contract stub (Agent 0). Owner: Agent 2 — replace the bodies, keep the signatures.
+import { redirect } from "next/navigation";
+import { signIn, signOut } from "@/auth";
+import { setConsentIntent } from "./consent-cookie";
 
-/** Landing-form server action (§3.4): check consent, set consent_intent cookie, signIn("google"). */
+/**
+ * Landing-form server action (§3.4). The form's checkbox MUST be named `consent`.
+ * Unticked -> redirect("/?error=consent"). Ticked -> set consent_intent cookie, then Google sign-in.
+ */
 export async function consentAndSignIn(formData: FormData): Promise<void> {
-  void formData;
-  throw new Error("NOT_IMPLEMENTED: owned by Agent 2");
+  const consent = formData.get("consent");
+  if (typeof consent !== "string" || consent.length === 0) {
+    redirect("/?error=consent");
+  }
+  await setConsentIntent();
+  // Throws a redirect (NEXT_REDIRECT) to Google: must not be wrapped in try/catch.
+  await signIn("google", { redirectTo: "/study" });
 }
 
+/** Usable directly as <form action={signOutAction}>. */
 export async function signOutAction(): Promise<void> {
-  throw new Error("NOT_IMPLEMENTED: owned by Agent 2");
+  await signOut({ redirectTo: "/" });
 }
