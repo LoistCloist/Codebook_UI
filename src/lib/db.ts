@@ -23,7 +23,20 @@ function createClient(): PrismaClient {
   return new PrismaClient({ adapter, log: ["warn", "error"] });
 }
 
-/** Prisma client singleton (reused across dev hot reloads). */
-export const db: PrismaClient = globalForPrisma.prisma ?? createClient();
+function getClient(): PrismaClient {
+  globalForPrisma.prisma ??= createClient();
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+/**
+ * Prisma client singleton (reused across dev hot reloads). Created on first use, not on import:
+ * `next build` imports route modules to read their config, and that must not require runtime
+ * secrets. Env is validated on the first query instead (and at server start, in instrumentation.ts).
+ */
+export const db: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const client = getClient();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});
