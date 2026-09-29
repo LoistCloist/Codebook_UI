@@ -76,4 +76,24 @@ describe("scenario loader", () => {
     expect(pub).toEqual({ id: "s01", title: "T", text: "Text", image: "/scenarios/a.png" });
     expect(Object.keys(toPublicScenario(parseScenarios([valid()])[0]))).toEqual(["id", "title", "text"]);
   });
+
+  it("passes imageAlt through to the public scenario when set", () => {
+    const pub = toPublicScenario(
+      parseScenarios([valid({ image: "/scenarios/a.png", imageAlt: "  A car at a crossing " })])[0],
+    );
+    expect(pub).toEqual({
+      id: "s01",
+      title: "T",
+      text: "Text",
+      image: "/scenarios/a.png",
+      imageAlt: "A car at a crossing",
+    });
+    expect(pub).not.toHaveProperty("answerKey");
+  });
+
+  it("omits imageAlt when absent and rejects an empty imageAlt", () => {
+    expect(toPublicScenario(parseScenarios([valid()])[0])).not.toHaveProperty("imageAlt");
+    expect(() => parseScenarios([valid({ imageAlt: "   " })])).toThrow(/malformed/);
+    expect(() => parseScenarios([valid({ imageAlt: 5 as unknown as string })])).toThrow(/malformed/);
+  });
 });

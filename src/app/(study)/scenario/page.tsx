@@ -10,8 +10,7 @@ export const metadata: Metadata = { title: "Scenario" };
 export default async function ScenarioPage() {
   const { participant } = await requireStep("/scenario");
   const s = await serveCurrentScenario(participant.id);
-  // imageAlt is a requested optional schema field; fall back to the title until it exists.
-  const alt = (s as { imageAlt?: string }).imageAlt ?? s.title;
+  const alt = s.imageAlt ?? s.title;
   const current = s.position + 1; // position is 0-based
 
   return (

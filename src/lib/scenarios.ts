@@ -18,6 +18,8 @@ export const ScenarioSchema = z.strictObject({
     .regex(/^\/scenarios\/[^/].*$/, 'image must be a path under /scenarios/ (e.g. "/scenarios/s01.png")')
     .refine((p) => !p.split("/").includes(".."), "image path must not contain ..")
     .optional(),
+  /** Alt text for the image; the page falls back to the title when absent. */
+  imageAlt: z.string().trim().min(1).optional(),
   answerKey: z.strictObject({ utilitarian: TheoryKey, kantian: TheoryKey }),
 });
 
@@ -34,7 +36,7 @@ export const ScenariosFileSchema = z
 
 export type Scenario = z.infer<typeof ScenarioSchema>;
 /** The only scenario shape that may reach the client (no answerKey). */
-export type PublicScenario = { id: string; title: string; text: string; image?: string };
+export type PublicScenario = { id: string; title: string; text: string; image?: string; imageAlt?: string };
 
 export const SCENARIOS_PATH = path.join(process.cwd(), "data", "scenarios.json");
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -87,7 +89,9 @@ export function getScenario(id: string): Scenario | undefined {
 }
 
 export function toPublicScenario(s: Scenario): PublicScenario {
-  return s.image === undefined
-    ? { id: s.id, title: s.title, text: s.text }
-    : { id: s.id, title: s.title, text: s.text, image: s.image };
+  // Explicit allow-list: answerKey (and any future private field) never reaches the client.
+  const pub: PublicScenario = { id: s.id, title: s.title, text: s.text };
+  if (s.image !== undefined) pub.image = s.image;
+  if (s.imageAlt !== undefined) pub.imageAlt = s.imageAlt;
+  return pub;
 }
