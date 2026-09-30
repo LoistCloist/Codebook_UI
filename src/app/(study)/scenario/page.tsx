@@ -29,6 +29,7 @@ export default async function ScenarioPage() {
           tabIndex={0}
           className="min-[900px]:sticky min-[900px]:top-4 min-[900px]:max-h-[calc(100dvh-2rem)] min-[900px]:overflow-y-auto min-[900px]:border-r min-[900px]:border-dashed min-[900px]:border-line-strong min-[900px]:pr-7"
         >
+          <p className="mb-1 font-mono text-[11px] tracking-wide text-muted">{s.id}</p>
           <h1 id="scenario-title" className="mb-2 text-[19px] leading-snug">
             {s.title}
           </h1>
