@@ -16,9 +16,9 @@ export function SubmitButton({ children, pending, pendingLabel = "Saving…" }: 
       type="submit"
       disabled={busy}
       aria-disabled={busy}
-      className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-accent px-6 py-2 text-base font-semibold text-white hover:bg-accent-strong disabled:cursor-wait disabled:opacity-80 sm:w-auto"
+      className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-lane px-7 py-2 font-mono text-[13.5px] font-semibold text-lane-ink hover:bg-lane-strong disabled:cursor-wait disabled:opacity-70 sm:w-auto"
     >
-      {busy ? pendingLabel : children}
+      {busy ? pendingLabel : <>{children} <span aria-hidden="true">→</span></>}
     </button>
   );
 }

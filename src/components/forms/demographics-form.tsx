@@ -56,7 +56,7 @@ export function DemographicsForm() {
 
       <RadioGroup name="ageRange" legend="What is your age range?" options={AGE_RANGE_OPTIONS} error={fieldErrors.ageRange} />
 
-      <div className={`rounded-lg border bg-surface p-4 ${fieldErrors.country ? "border-danger" : "border-line"}`}>
+      <div className={`rounded border bg-surface px-5 py-5 ${fieldErrors.country ? "border-danger" : "border-line"}`}>
         <label htmlFor="country" className="mb-3 block text-base font-semibold text-ink">
           Which country do you live in?
         </label>
@@ -73,7 +73,7 @@ export function DemographicsForm() {
           defaultValue=""
           aria-invalid={fieldErrors.country ? true : undefined}
           aria-describedby={fieldErrors.country ? "country-error" : undefined}
-          className="min-h-11 w-full rounded-md border border-line bg-surface px-3 py-2 text-base text-ink"
+          className="min-h-11 w-full rounded border border-line-strong bg-white px-3 py-2 text-base text-ink"
         >
           <option value="" disabled>
             Select a country

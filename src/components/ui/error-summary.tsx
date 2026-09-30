@@ -22,9 +22,9 @@ export function ErrorSummary({ title = "There is a problem", items }: Props) {
       tabIndex={-1}
       role="alert"
       aria-labelledby="error-summary-title"
-      className="mb-6 rounded-lg border-2 border-danger bg-danger-soft p-4"
+      className="mb-6 rounded border border-l-4 border-danger bg-danger-soft p-4"
     >
-      <h2 id="error-summary-title" className="text-base font-semibold text-danger">
+      <h2 id="error-summary-title" className="font-serif text-base font-semibold text-danger">
         {title}
       </h2>
       <ul className="mt-2 list-disc space-y-1 pl-5">

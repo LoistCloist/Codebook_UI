@@ -39,15 +39,19 @@ const CONFIDENCE_OPTIONS: RadioOption[] = Array.from(
   },
 );
 
+const TAG_CLASS = { utilitarian: "text-util", kantian: "text-kant" } as const;
+
 const LEGENDS: Record<"utilitarian" | "kantian", ReactNode> = {
   utilitarian: (
     <>
-      Under <strong>utilitarian</strong> ethics, the car should…
+      <span className={`mb-2 block font-mono text-xs tracking-wide ${TAG_CLASS.utilitarian}`}>UTILITARIAN RULEBOOK</span>
+      Under <strong className="font-semibold">utilitarian</strong> ethics, the car should…
     </>
   ),
   kantian: (
     <>
-      Under <strong>Kantian</strong> ethics, the car should…
+      <span className={`mb-2 block font-mono text-xs tracking-wide ${TAG_CLASS.kantian}`}>KANTIAN RULEBOOK</span>
+      Under <strong className="font-semibold">Kantian</strong> ethics, the car should…
     </>
   ),
 };
@@ -96,10 +100,17 @@ export function ScenarioForm({ scenarioId, questionOrder, askOwnChoice, askConfi
   ];
 
   return (
-    <form noValidate onSubmit={onSubmit} className="space-y-6">
+    <form noValidate onSubmit={onSubmit} className="space-y-4">
       <ErrorSummary items={items} />
       {theoryOrder.map((t) => (
-        <RadioGroup key={t} name={t} legend={LEGENDS[t]} options={CHOICE_OPTIONS} error={fieldErrors[t]} />
+        <RadioGroup
+          key={t}
+          name={t}
+          legend={LEGENDS[t]}
+          options={CHOICE_OPTIONS}
+          error={fieldErrors[t]}
+          tone={t === "utilitarian" ? "util" : "kant"}
+        />
       ))}
       {askOwnChoice && (
         <RadioGroup
@@ -118,8 +129,10 @@ export function ScenarioForm({ scenarioId, questionOrder, askOwnChoice, askConfi
           inline
         />
       )}
-      <p className="text-sm text-muted">Answers are final once saved. You can&apos;t go back to change them.</p>
-      <SubmitButton pending={pending}>{isLast ? "Save and finish" : "Save and continue"}</SubmitButton>
+      <p className="text-[13px] italic text-muted">Answers are final once saved. You can&apos;t go back to change them.</p>
+      <div className="border-t border-dashed border-line-strong pt-5 sm:text-right">
+        <SubmitButton pending={pending}>{isLast ? "Save and finish" : "Save and continue"}</SubmitButton>
+      </div>
     </form>
   );
 }
