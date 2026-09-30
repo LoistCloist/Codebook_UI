@@ -5,6 +5,8 @@ import { requireStep } from "@/components/server/require-step";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
 import { Progress } from "@/components/ui/progress";
 import { ScenarioForm } from "@/components/forms/scenario-form";
+import { ScenarioDiagram } from "@/components/scenario/scenario-diagram";
+import { parseScene } from "@/lib/scene";
 import { CHOICE_OPTIONS, study } from "@/config/study";
 
 export const metadata: Metadata = { title: "Scenario" };
@@ -14,6 +16,8 @@ export default async function ScenarioPage() {
   const s = await serveCurrentScenario(participant.id);
   const alt = s.imageAlt ?? s.title;
   const current = s.position + 1; // position is 0-based
+  // A hand-made image wins; otherwise draw the scene from the action outcomes when they parse.
+  const scene = !s.image && s.actions ? parseScene(s.actions) : null;
 
   return (
     <div data-wide>
@@ -33,6 +37,7 @@ export default async function ScenarioPage() {
               <Image src={s.image} alt={alt} fill sizes="(max-width: 900px) 100vw, 700px" className="object-contain" priority />
             </div>
           )}
+          {scene && <ScenarioDiagram scene={scene} idPrefix={s.id} />}
           <p className="mb-4 whitespace-pre-line text-[13px] italic text-muted">{s.text}</p>
 
           {s.world && (
