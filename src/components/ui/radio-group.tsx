@@ -7,6 +7,24 @@ export function fieldAnchor(name: string): string {
   return `${name}-opt-0`;
 }
 
+/** Colour-coding for the two ethical theories (utilitarian green, Kantian indigo). */
+export type Tone = "util" | "kant";
+
+const TONES: Record<Tone | "neutral", { block: string; option: string }> = {
+  neutral: {
+    block: "",
+    option: "has-[:checked]:border-ink has-[:checked]:bg-accent-soft",
+  },
+  util: {
+    block: "border-l-4 border-l-util",
+    option: "has-[:checked]:border-util has-[:checked]:bg-util-soft",
+  },
+  kant: {
+    block: "border-l-4 border-l-kant",
+    option: "has-[:checked]:border-kant has-[:checked]:bg-kant-soft",
+  },
+};
+
 type Props = {
   name: string;
   legend: ReactNode;
@@ -16,21 +34,23 @@ type Props = {
   disabled?: boolean;
   /** Lay options out in a row on wider screens (e.g. a 1–5 scale). */
   inline?: boolean;
+  tone?: Tone;
 };
 
 /** Accessible radio group: fieldset/legend, whole-row labels with 44px+ tap targets. */
-export function RadioGroup({ name, legend, options, hint, error, disabled, inline }: Props) {
+export function RadioGroup({ name, legend, options, hint, error, disabled, inline, tone }: Props) {
   const hintId = hint ? `${name}-hint` : undefined;
   const errorId = error ? `${name}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
+  const t = TONES[tone ?? "neutral"];
   return (
     <fieldset
-      className={`rounded-lg border bg-surface p-4 ${error ? "border-danger" : "border-line"}`}
+      className={`rounded border bg-surface px-5 py-5 ${error ? "border-danger" : "border-line"} ${t.block}`}
       aria-describedby={describedBy}
       aria-invalid={error ? true : undefined}
       disabled={disabled}
     >
-      <legend className="float-left mb-3 w-full text-base font-semibold text-ink">{legend}</legend>
+      <legend className="float-left mb-4 w-full text-base font-medium leading-snug text-ink">{legend}</legend>
       {hint && (
         <p id={hintId} className="clear-left mb-3 text-sm text-muted">
           {hint}
@@ -49,7 +69,7 @@ export function RadioGroup({ name, legend, options, hint, error, disabled, inlin
             <label
               key={o.value}
               htmlFor={id}
-              className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-line px-3 py-2 hover:bg-accent-soft has-[:checked]:border-accent has-[:checked]:bg-accent-soft ${inline ? "sm:flex-1" : ""}`}
+              className={`flex min-h-11 cursor-pointer items-center gap-3 rounded border border-line-strong bg-white px-3.5 py-2.5 text-[15px] transition-colors hover:bg-page ${t.option} ${inline ? "sm:flex-1" : ""}`}
             >
               <input
                 id={id}
@@ -57,7 +77,7 @@ export function RadioGroup({ name, legend, options, hint, error, disabled, inlin
                 name={name}
                 value={o.value}
                 required
-                className="size-5 shrink-0 accent-accent"
+                className="size-4 shrink-0 accent-ink"
               />
               <span>{o.label}</span>
             </label>

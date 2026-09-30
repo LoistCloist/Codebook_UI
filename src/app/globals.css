@@ -1,22 +1,44 @@
 @import "tailwindcss";
 
 /*
- * Neutral light theme. All text/background pairs below meet WCAG AA:
- *   ink #1f2937 on #ffffff ≈ 14.7:1, muted #4b5563 on #ffffff ≈ 7.6:1,
- *   white on accent #1d4ed8 ≈ 6.7:1, danger #b91c1c on #ffffff ≈ 6.5:1.
+ * "Paper and asphalt" theme (IBM Plex, sage paper, dark road panels, lane-yellow accent).
+ * All text/background pairs below meet WCAG AA:
+ *   ink #1b1e1a on page #eef0ea 14.7:1, muted #565c54 on page 6.0:1 (on surface 6.5:1),
+ *   button text #2a1f04 on lane #e8b23d 8.4:1, util #2b6e5e on surface 5.7:1, kant #3f4a8c 7.7:1,
+ *   danger #a61b1b on surface 7.1:1 (on danger-soft 6.6:1), on-dark #c9cbc2 on asphalt #232720 9.3:1,
+ *   on-dark-muted #9ea296 on asphalt 5.8:1, lane on asphalt 7.9:1.
+ * Lane yellow is only ever a background (or text on asphalt) — never text on paper.
  */
 @theme {
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --color-page: #f9fafb;
-  --color-surface: #ffffff;
-  --color-ink: #1f2937;
-  --color-muted: #4b5563;
-  --color-line: #d1d5db;
-  --color-accent: #1d4ed8;
-  --color-accent-strong: #1e3a8a;
-  --color-accent-soft: #eff6ff;
-  --color-danger: #b91c1c;
-  --color-danger-soft: #fef2f2;
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-plex-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-page: #eef0ea;
+  --color-surface: #f8f9f4;
+  --color-ink: #1b1e1a;
+  --color-muted: #565c54;
+  --color-line: #d3d6c9;
+  --color-line-strong: #b7bba9;
+  --color-accent: #1b1e1a;
+  --color-accent-strong: #3f4a8c;
+  --color-accent-soft: #e4e7dc;
+  --color-danger: #a61b1b;
+  --color-danger-soft: #fbeceb;
+
+  --color-asphalt: #232720;
+  --color-asphalt-2: #2c312a;
+  --color-asphalt-line: #464c41;
+  --color-on-dark: #c9cbc2;
+  --color-on-dark-muted: #9ea296;
+  --color-lane: #e8b23d;
+  --color-lane-strong: #f0c05c;
+  --color-lane-ink: #2a1f04;
+
+  --color-util: #2b6e5e;
+  --color-util-soft: #e4efea;
+  --color-kant: #3f4a8c;
+  --color-kant-soft: #e7e9f5;
 }
 
 :root {
@@ -31,22 +53,32 @@ body {
   background: var(--color-page);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
-/* Always-visible focus indicator (3:1+ against page and surface). */
-:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-}
+/* In the base layer so Tailwind utilities (e.g. no-underline, text-lane) can override them. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+  }
 
-a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-a:hover {
-  color: var(--color-accent-strong);
+  /* Always-visible focus indicator (3:1+ against page and surface). */
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  a:hover {
+    color: var(--color-accent-strong);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
