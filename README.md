@@ -68,7 +68,6 @@ is missing or malformed):
 | `DIRECT_URL` | Production only: direct/session connection for `prisma migrate` (falls back to `DATABASE_URL`). |
 | `DATABASE_POOL_MAX` | Optional: connections per server instance (default 3 in production, 10 otherwise). |
 | `DATABASE_SSL_CA` | Optional: the database's root CA (PEM). Enables verified TLS; don't also put `sslmode` in `DATABASE_URL`. |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Optional: shared rate-limit store for serverless/multi-instance hosts. Blank = in-memory. |
 
 ## Google OAuth setup
 
@@ -200,8 +199,8 @@ formula injection.
 ## Deploy
 
 **Recommended: Vercel + Supabase.** Follow the step-by-step checklist in
-[`docs/deploy-vercel.md`](docs/deploy-vercel.md). It covers the database, the shared rate
-limiter, Vercel settings, Google OAuth for production, a smoke test and a launch checklist.
+[`docs/deploy-vercel.md`](docs/deploy-vercel.md). It covers the database, Vercel
+settings, Google OAuth for production, a smoke test and a launch checklist.
 
 Any other Node 22 host with managed PostgreSQL works too:
 
@@ -225,16 +224,6 @@ Any other Node 22 host with managed PostgreSQL works too:
    disable it. The migrations also enable row-level security with no policies, which blocks
    those APIs while the app, as table owner, is unaffected.
 
-### Rate limiting
-
-Write endpoints are limited to 10 writes per minute per participant (`src/lib/rate-limit.ts`).
-With `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` set, the sliding window is shared across
-all instances through Upstash Redis. Without them, it falls back to an **in-memory** window per
-server process. That's fine for local development and single-server hosts, but on serverless hosts
-each instance counts separately, and the app logs a startup warning in production. If Upstash is
-unreachable, the limiter lets requests through (fail open). The limit is defence in depth: one
-response per person is enforced by the database, not by the limiter.
-
 ## Privacy and security notes
 
 - No email, name or profile picture is stored or logged for participants. Auth.js uses JWT
@@ -245,7 +234,8 @@ response per person is enforced by the database, not by the limiter.
   It isn't used for one-response enforcement; the participant hash and the database are.
 - Write routes (`/api/demographics`, `/api/comprehension`, `/api/responses`) require
   `Content-Type: application/json` and an `Origin` equal to `NEXTAUTH_URL` (CSRF protection), then
-  check session → participant → not completed → current step → rate limit → zod validation.
+  check session → participant → not completed → current step → zod validation. There is no rate limit;
+  one response per person per scenario is enforced by the database.
 - The answer key, the comprehension answers and all DB code are `server-only`; the client receives
   scenarios without `answerKey`.
 

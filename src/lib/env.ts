@@ -32,13 +32,6 @@ export const EnvSchema = z
     PARTICIPANT_HASH_SECRET: secret("PARTICIPANT_HASH_SECRET"),
     // Raw comma-separated list; parsing/normalising is Agent 2's job (src/lib/auth).
     ADMIN_EMAILS: z.string().default(""),
-    // Optional shared rate-limit store (src/lib/rate-limit.ts). Set both or neither.
-    UPSTASH_REDIS_REST_URL: optional(z.url()),
-    UPSTASH_REDIS_REST_TOKEN: optional(z.string().min(1)),
-  })
-  .refine((e) => !e.UPSTASH_REDIS_REST_URL === !e.UPSTASH_REDIS_REST_TOKEN, {
-    path: ["UPSTASH_REDIS_REST_TOKEN"],
-    message: "set both UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN, or neither",
   })
   // node-postgres lets sslmode in the URL override the ssl option, silently dropping the CA.
   .refine((e) => !e.DATABASE_SSL_CA || !/[?&]sslmode=/.test(e.DATABASE_URL), {

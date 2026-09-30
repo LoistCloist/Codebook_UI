@@ -3,9 +3,8 @@
 A step-by-step checklist. It takes about an hour the first time. Dashboard labels change now and
 then; if a menu item has moved, search the provider's docs for the name in **bold**.
 
-You'll create three accounts or projects: **Supabase** (the database), **Upstash** (the shared rate
-limiter) and **Vercel** (the app). Keep a private note of every value you copy; the
-secrets marked 🔒 can't be recovered if lost.
+You'll create two accounts or projects: **Supabase** (the database) and **Vercel** (the app). Keep
+a private note of every value you copy; the secrets marked 🔒 can't be recovered if lost.
 
 ---
 
@@ -16,7 +15,7 @@ secrets marked 🔒 can't be recovered if lost.
       Vercel's GitHub app for it.
 - [ ] Decide on **one region** for everything, as close to your participants as possible, and
       check it against your ethics/IRB approval for where data may be stored. For example, US
-      East: Supabase `us-east-1`, Vercel `iad1` (Washington, D.C.), Upstash `us-east-1`.
+      East: Supabase `us-east-1`, Vercel `iad1` (Washington, D.C.).
 - [ ] Generate production secrets (don't reuse the local ones):
       ```bash
       openssl rand -hex 32   # → NEXTAUTH_SECRET 🔒
@@ -55,17 +54,7 @@ secrets marked 🔒 can't be recovered if lost.
        - **Never run `npm run db:seed` against production.** It refuses when `NODE_ENV=production`,
          but it doesn't know about your laptop's shell.
 
-## 2. Upstash: the shared rate limiter
-
-1. [ ] <https://console.upstash.com> → **Create database** (Redis), in the region from step 0.
-       The free tier is plenty.
-2. [ ] In the database's **REST API** section, copy **`UPSTASH_REDIS_REST_URL`** and
-       **`UPSTASH_REDIS_REST_TOKEN`** 🔒.
-
-(Upstash is optional: without it, the app works and logs a startup warning, and each serverless
-instance rate-limits on its own. The database enforces one response per person either way.)
-
-## 3. Vercel: the app
+## 2. Vercel: the app
 
 1. [ ] <https://vercel.com> → **Add New → Project** → import the GitHub repo. The Next.js
        framework preset is detected. Leave the build and install commands as they are
@@ -78,12 +67,11 @@ instance rate-limits on its own. The database enforces one response per person e
        | `DATABASE_URL` | Supabase **transaction pooler** URL (port 6543), **without** `?sslmode=…` |
        | `DATABASE_SSL_CA` | The whole certificate file's text, including the BEGIN/END lines |
        | `DATABASE_POOL_MAX` | `3` (optional; this is the production default) |
-       | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | From Google Cloud (step 4) |
+       | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | From Google Cloud (step 3) |
        | `NEXTAUTH_SECRET` | From step 0 |
        | `NEXTAUTH_URL` | `https://<your-project>.vercel.app` for now; update it if you add a custom domain |
        | `PARTICIPANT_HASH_SECRET` | From step 0 |
        | `ADMIN_EMAILS` | Your Google email(s), comma-separated |
-       | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | From step 2 |
 
        Don't set `DIRECT_URL` or `TEST_DATABASE_URL` on Vercel.
 3. [ ] **Settings → Functions → Function region**: choose the region from step 0 (e.g. `iad1`).
@@ -94,7 +82,7 @@ instance rate-limits on its own. The database enforces one response per person e
 6. [ ] **Plan terms.** The free Hobby plan is for personal, non-commercial projects. Check
        whether your lab or institution's study needs **Pro**.
 
-## 4. Google OAuth for production
+## 3. Google OAuth for production
 
 In Google Cloud Console, on the OAuth client you created for local testing (or a new one):
 
@@ -104,7 +92,7 @@ In Google Cloud Console, on the OAuth client you created for local testing (or a
        The app only asks for basic scopes (`openid email profile`), so no verification review is
        needed.
 
-## 5. Smoke test, then clear the test data
+## 4. Smoke test, then clear the test data
 
 1. [ ] Open the site, tick consent, sign in, and complete the study once yourself.
 2. [ ] Sign in again: you should see "You've already completed this study, thank you."
@@ -117,7 +105,7 @@ In Google Cloud Console, on the OAuth client you created for local testing (or a
        ```
        Only do this before real data collection starts.
 
-## 6. Launch checklist
+## 5. Launch checklist
 
 - [ ] Real study text in `src/config/study.ts` and real scenarios in `data/scenarios.json`
       (zero-padded IDs such as `s01`). Deploy, then check the Vercel logs for

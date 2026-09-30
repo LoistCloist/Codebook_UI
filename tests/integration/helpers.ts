@@ -2,7 +2,6 @@ import { expect } from "vitest";
 import { db } from "@/lib/db";
 import { participantHash } from "@/lib/auth/hash";
 import { ensureParticipant } from "@/lib/flow/participant";
-import { resetRateLimit } from "@/lib/rate-limit";
 import { POST as postDemographics } from "@/app/api/demographics/route";
 import { POST as postComprehension } from "@/app/api/comprehension/route";
 import { POST as postResponses } from "@/app/api/responses/route";
@@ -55,7 +54,6 @@ export async function resetDb(): Promise<void> {
   const url = process.env.DATABASE_URL ?? "";
   expect(url, "integration tests must run against TEST_DATABASE_URL").toBe(process.env.TEST_DATABASE_URL);
   await db.$executeRawUnsafe("TRUNCATE TABLE responses, participants RESTART IDENTITY CASCADE");
-  resetRateLimit();
 }
 
 export async function counts() {

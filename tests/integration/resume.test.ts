@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { ensureParticipant, getCurrentParticipant } from "@/lib/flow/participant";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
-import { resetRateLimit } from "@/lib/rate-limit";
 import { answerFor, call, counts, resetDb, routes, signInAs, signOut, startParticipant } from "./helpers";
 
 vi.mock("@/lib/auth/session", async () => (await import("./auth-mock")).sessionMock);
@@ -29,7 +28,6 @@ describe("resume where left off", () => {
     signOut();
     expect(await getCurrentParticipant()).toBeNull();
     signInAs("google-sub-resume");
-    resetRateLimit();
 
     const back = await ensureParticipant();
     expect(back?.participant.id).toBe(participant.id);

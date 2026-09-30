@@ -28,19 +28,9 @@ describe("parseEnv", () => {
   });
 
   it("treats blank optional values as unset", () => {
-    const e = parseEnv({ ...good, DIRECT_URL: "", UPSTASH_REDIS_REST_URL: "", UPSTASH_REDIS_REST_TOKEN: "" });
+    const e = parseEnv({ ...good, DIRECT_URL: "", DATABASE_POOL_MAX: "" });
     expect(e.DIRECT_URL).toBeUndefined();
-    expect(e.UPSTASH_REDIS_REST_URL).toBeUndefined();
-  });
-
-  it("requires both Upstash variables or neither", () => {
-    expect(() => parseEnv({ ...good, UPSTASH_REDIS_REST_URL: "https://x.upstash.io" })).toThrow(
-      /UPSTASH_REDIS_REST_TOKEN/,
-    );
-    expect(
-      parseEnv({ ...good, UPSTASH_REDIS_REST_URL: "https://x.upstash.io", UPSTASH_REDIS_REST_TOKEN: "t" })
-        .UPSTASH_REDIS_REST_TOKEN,
-    ).toBe("t");
+    expect(e.DATABASE_POOL_MAX).toBeUndefined();
   });
 
   it("parses DATABASE_POOL_MAX as an integer", () => {

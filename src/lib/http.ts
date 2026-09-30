@@ -12,7 +12,6 @@ export type ApiErrorCode =
   | "study_completed" // 409
   | "already_submitted" // 409 (demographics / comprehension)
   | "already_answered" // 409 (scenario response)
-  | "rate_limited" // 429
   | "invalid_json" // 422
   | "validation"; // 422
 

@@ -18,7 +18,6 @@ vi.mock("@/lib/db", () => ({
 import { POST as postDemographics } from "@/app/api/demographics/route";
 import { POST as postComprehension } from "@/app/api/comprehension/route";
 import { POST as postResponses } from "@/app/api/responses/route";
-import { resetRateLimit } from "@/lib/rate-limit";
 
 const demographics = { ageRange: "age_25_34", country: "DE", drives: "yes", ethicsCoursework: "some" };
 const answer = { scenarioId: "s02", utilitarian: "maintain", kantian: "swerve_left" };
@@ -34,7 +33,6 @@ async function json(r: Response) {
 
 beforeEach(() => {
   h.db = makeDb();
-  resetRateLimit();
   session.getParticipantHash.mockReset().mockResolvedValue("hash-1");
 });
 
@@ -88,15 +86,6 @@ describe("shared guard order", () => {
     withParticipant(participant()); // on demographics
     const r = await json(await postResponses(post("{not json")));
     expect(r).toEqual({ status: 403, body: { ok: false, error: "wrong_step", next: "/demographics" } });
-  });
-
-  it("rate limit (10/min) applies after the step check and before validation", async () => {
-    withParticipant(participant());
-    h.db.participant.updateMany.mockResolvedValue({ count: 1 });
-    for (let i = 0; i < 10; i++) expect((await postDemographics(post({}))).status).toBe(422);
-    const r = await postDemographics(post(demographics));
-    expect(r.status).toBe(429);
-    expect(r.headers.get("retry-after")).toBe("60");
   });
 
   it("invalid JSON → 422 invalid_json", async () => {

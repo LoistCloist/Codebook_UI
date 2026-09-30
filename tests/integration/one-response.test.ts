@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db, Prisma } from "@/lib/db";
 import { ensureParticipant, getCurrentParticipant } from "@/lib/flow/participant";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
-import { resetRateLimit } from "@/lib/rate-limit";
 import {
   COMPREHENSION,
   DEMOGRAPHICS,
@@ -49,7 +48,6 @@ describe("one response per Google account", () => {
 
     // Same Google account signs in again (fresh session, fresh consent cookie).
     signInAs("google-sub-a");
-    resetRateLimit();
     const again = await ensureParticipant();
     expect(again?.participant.id).toBe(participant.id);
     expect(again?.step).toEqual({ kind: "completed" });

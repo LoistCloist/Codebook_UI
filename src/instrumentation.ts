@@ -5,11 +5,8 @@ export async function register() {
   const { getEnv } = await import("@/lib/env");
   const { getScenarios, scenariosMissingKeys } = await import("@/lib/scenarios");
 
-  const env = getEnv();
+  getEnv(); // throws on invalid config
   const scenarios = getScenarios();
-  if (env.NODE_ENV === "production" && !env.UPSTASH_REDIS_REST_URL) {
-    console.warn("[startup] UPSTASH_REDIS_REST_URL not set: rate limiting is per-instance only");
-  }
   const unkeyed = scenariosMissingKeys(scenarios);
   if (unkeyed.length > 0) {
     console.warn(

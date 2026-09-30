@@ -10,13 +10,6 @@ function safePath(next: unknown): string | null {
   return typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : null;
 }
 
-function retryAfter(res: Response, body: unknown): number | null {
-  const fromBody = (body as { retryAfterSec?: unknown } | null)?.retryAfterSec;
-  if (typeof fromBody === "number" && fromBody > 0) return Math.ceil(fromBody);
-  const header = Number(res.headers.get("Retry-After"));
-  return Number.isFinite(header) && header > 0 ? Math.ceil(header) : null;
-}
-
 /**
  * POSTs JSON to one of our API routes and follows `next`. Returns a user-facing
  * error message (or null) and a pending flag. Pending stays true after success so
@@ -98,15 +91,6 @@ export function usePostJson(url: string) {
         case 422:
           setError("Some answers weren't accepted. Please check them and try again.");
           return;
-        case 429: {
-          const s = retryAfter(res, data);
-          setError(
-            s
-              ? `You're submitting too quickly. Please wait ${s} second${s === 1 ? "" : "s"} and try again.`
-              : "You're submitting too quickly. Please wait a moment and try again.",
-          );
-          return;
-        }
         default:
           setError("Something went wrong while saving. Please try again.");
       }

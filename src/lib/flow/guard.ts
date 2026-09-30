@@ -3,11 +3,10 @@ import { getParticipantHash } from "@/lib/auth/session";
 import { stepToPath } from "@/lib/flow/next-step";
 import { loadParticipantState, type ParticipantState } from "@/lib/flow/participant";
 import { checkRequest, fail, readJson } from "@/lib/http";
-import { checkRateLimit } from "@/lib/rate-limit";
 
 // Owner: Agent 3. The shared pre-write chain for every write endpoint (§3.8, §5 Agent 3):
 // origin → content-type → session (401) → participant exists (403) → not completed (409)
-// → correct step (403/409, route-specific) → rate limit (429) → JSON body (422).
+// → correct step (403/409, route-specific) → JSON body (422).
 // The route then validates the body with zod (422) and writes.
 
 export type GuardResult =
@@ -37,12 +36,6 @@ export async function guardWrite(req: Request, checkStep: StepCheck): Promise<Gu
 
   const stepError = checkStep(state);
   if (stepError) return { ok: false, response: stepError };
-
-  const limit = await checkRateLimit(hash);
-  if (!limit.ok) {
-    const retry = String(limit.retryAfterSec ?? 60);
-    return { ok: false, response: fail(429, "rate_limited", { headers: { "Retry-After": retry } }) };
-  }
 
   const body = await readJson(req);
   if (!body.ok) return { ok: false, response: fail(422, "invalid_json") };
