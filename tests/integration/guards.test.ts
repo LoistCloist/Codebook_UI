@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { ensureParticipant } from "@/lib/flow/participant";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
-import { DEMOGRAPHICS, answerFor, call, counts, resetDb, routes, signInAs, signOut, startParticipant } from "./helpers";
+import { COMPREHENSION, answerFor, call, counts, resetDb, routes, signInAs, signOut, startParticipant } from "./helpers";
 
 vi.mock("@/lib/auth/session", async () => (await import("./auth-mock")).sessionMock);
 vi.mock("@/lib/auth/consent-cookie", async () => (await import("./auth-mock")).consentMock);
@@ -41,12 +41,7 @@ describe("write guards", () => {
     const scenarioId = created!.participant.scenarioOrder[0];
     expect(await call(routes.responses, answerFor(scenarioId))).toEqual({
       status: 403,
-      body: { ok: false, error: "wrong_step", next: "/demographics" },
-    });
-    expect(await call(routes.demographics, DEMOGRAPHICS)).toMatchObject({ status: 200 });
-    expect(await call(routes.responses, answerFor(scenarioId))).toMatchObject({
-      status: 403,
-      body: { error: "wrong_step", next: "/primer" },
+      body: { ok: false, error: "wrong_step", next: "/primer" },
     });
     expect((await counts()).responses).toBe(0);
   });
@@ -58,43 +53,43 @@ describe("write guards", () => {
   ])("rejects %s with 403 bad_origin on every write route", async (_label, headers) => {
     signInAs("google-sub-csrf");
     await ensureParticipant();
-    for (const route of [routes.demographics, routes.comprehension, routes.responses]) {
-      expect(await call(route, DEMOGRAPHICS, headers)).toEqual({ status: 403, body: { ok: false, error: "bad_origin" } });
+    for (const route of [routes.comprehension, routes.responses]) {
+      expect(await call(route, COMPREHENSION, headers)).toEqual({ status: 403, body: { ok: false, error: "bad_origin" } });
     }
     const p = await db.participant.findFirstOrThrow();
-    expect(p.demographicsAt).toBeNull();
+    expect(p.primerCompletedAt).toBeNull();
   });
 
   it("rejects a non-JSON content type with 415", async () => {
     signInAs("google-sub-ct");
     await ensureParticipant();
-    const res = await call(routes.demographics, DEMOGRAPHICS, { "content-type": "application/x-www-form-urlencoded" });
+    const res = await call(routes.comprehension, COMPREHENSION, { "content-type": "application/x-www-form-urlencoded" });
     expect(res).toEqual({ status: 415, body: { ok: false, error: "unsupported_media_type" } });
-    expect((await db.participant.findFirstOrThrow()).demographicsAt).toBeNull();
+    expect((await db.participant.findFirstOrThrow()).primerCompletedAt).toBeNull();
   });
 
   it("rejects writes without a session with 401, and without a participant row with 403", async () => {
     signOut();
-    expect(await call(routes.demographics, DEMOGRAPHICS)).toEqual({
+    expect(await call(routes.comprehension, COMPREHENSION)).toEqual({
       status: 401,
       body: { ok: false, error: "unauthorized", next: "/" },
     });
     signInAs("google-sub-no-row");
-    expect(await call(routes.demographics, DEMOGRAPHICS)).toEqual({
+    expect(await call(routes.comprehension, COMPREHENSION)).toEqual({
       status: 403,
       body: { ok: false, error: "no_participant", next: "/" },
     });
     expect(await counts()).toEqual({ participants: 0, responses: 0 });
   });
 
-  it("demographics can be saved only once (409)", async () => {
+  it("the comprehension check can be submitted only once (409)", async () => {
     signInAs("google-sub-twice");
     await ensureParticipant();
-    expect(await call(routes.demographics, DEMOGRAPHICS)).toMatchObject({ status: 200 });
-    expect(await call(routes.demographics, { ...DEMOGRAPHICS, country: "FR" })).toMatchObject({
+    expect(await call(routes.comprehension, COMPREHENSION)).toMatchObject({ status: 200 });
+    expect(await call(routes.comprehension, { answers: ["duty", "follow_rule"] })).toMatchObject({
       status: 409,
       body: { error: "already_submitted" },
     });
-    expect((await db.participant.findFirstOrThrow()).country).toBe("DE");
+    expect((await db.participant.findFirstOrThrow()).comprehensionPassed).toBe(true);
   });
 });

@@ -2,7 +2,6 @@ import { expect } from "vitest";
 import { db } from "@/lib/db";
 import { participantHash } from "@/lib/auth/hash";
 import { ensureParticipant } from "@/lib/flow/participant";
-import { POST as postDemographics } from "@/app/api/demographics/route";
 import { POST as postComprehension } from "@/app/api/comprehension/route";
 import { POST as postResponses } from "@/app/api/responses/route";
 import { COMPREHENSION_CORRECT } from "@/config/comprehension-answers";
@@ -41,12 +40,10 @@ export async function call(handler: Handler, body: unknown, headers?: Record<str
 }
 
 export const routes = {
-  demographics: postDemographics as Handler,
   comprehension: postComprehension as Handler,
   responses: postResponses as Handler,
 };
 
-export const DEMOGRAPHICS = { ageRange: "age_25_34", country: "DE", drives: "yes", ethicsCoursework: "some" };
 export const COMPREHENSION = { answers: [...COMPREHENSION_CORRECT] };
 
 /** Guards against ever wiping the dev database, then empties the test database. */
@@ -60,12 +57,11 @@ export async function counts() {
   return { participants: await db.participant.count(), responses: await db.response.count() };
 }
 
-/** Creates the participant (as /study would) and completes demographics + primer via the real routes. */
+/** Creates the participant (as /study would) and completes the primer via the real routes. */
 export async function startParticipant(googleSub: string) {
   signInAs(googleSub);
   const created = await ensureParticipant();
   if (!created) throw new Error("ensureParticipant returned null");
-  expect(await call(routes.demographics, DEMOGRAPHICS)).toMatchObject({ status: 200, body: { next: "/primer" } });
   expect(await call(routes.comprehension, COMPREHENSION)).toMatchObject({ status: 200, body: { next: "/scenario" } });
   return created.participant;
 }

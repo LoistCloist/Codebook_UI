@@ -23,6 +23,7 @@ export function participant(overrides: Partial<Participant> = {}): Participant {
   };
 }
 
-export const atPrimer = { demographicsAt: T };
-export const atScenarios = { demographicsAt: T, primerCompletedAt: T };
+/** New participants start at the primer. */
+export const atPrimer = {};
+export const atScenarios = { primerCompletedAt: T };
 export const done = { ...atScenarios, completedAt: T };

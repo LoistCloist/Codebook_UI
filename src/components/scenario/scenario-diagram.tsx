@@ -15,7 +15,7 @@ const ICON_H = 40;
 const ICON_GAP = 36;
 const ICONS_PER_ROW = 5;
 const ICON_TOP = 34;
-const LABEL_LINE = 17;
+const LABEL_LINE = 19;
 
 const SHORT: Record<string, [one: string, many: string]> = {
   "adult pedestrian": ["adult", "adults"],
@@ -75,7 +75,7 @@ export function ScenarioDiagram({ scene, idPrefix }: { scene: Scene; idPrefix: s
             x={COL[k]}
             y={22}
             textAnchor="middle"
-            fontSize={12}
+            fontSize={13}
             letterSpacing={1}
             className="fill-on-dark-muted font-mono"
           >
@@ -97,7 +97,7 @@ export function ScenarioDiagram({ scene, idPrefix }: { scene: Scene; idPrefix: s
           strokeWidth={1.5}
           className="stroke-on-dark"
         />
-        <text x={COL.swerve_right} y={96} textAnchor="middle" fontSize={14} className="fill-on-dark font-sans">
+        <text x={COL.swerve_right} y={96} textAnchor="middle" fontSize={16} className="fill-on-dark font-sans">
           Barrier
         </text>
 
@@ -251,7 +251,7 @@ function GroupView({ group, cx, sym }: { group: Group; cx: number; sym: (t: Figu
     return (
       <g className="text-on-dark">
         {group.vehicle === "car" ? <Car cx={cx} occupants={n} /> : <Motorcycle cx={cx} riders={n} />}
-        <text x={cx} y={98} textAnchor="middle" fontSize={14} className="fill-on-dark font-sans">
+        <text x={cx} y={98} textAnchor="middle" fontSize={16} className="fill-on-dark font-sans">
           {text}
         </text>
       </g>
@@ -278,7 +278,7 @@ function GroupView({ group, cx, sym }: { group: Group; cx: number; sym: (t: Figu
           x={cx}
           y={labelTop + i * LABEL_LINE}
           textAnchor="middle"
-          fontSize={14}
+          fontSize={16}
           className="fill-on-dark font-sans"
         >
           {figureLabel(f)}
@@ -363,14 +363,14 @@ function Av({ passengers, cx }: { passengers: number; cx: number }) {
           />
         ))
       ) : (
-        <text x={cx} y={y + 52} textAnchor="middle" fontSize={16} fontWeight={600} className="fill-lane-ink font-sans">
+        <text x={cx} y={y + 52} textAnchor="middle" fontSize={18} fontWeight={600} className="fill-lane-ink font-sans">
           {passengers}
         </text>
       )}
-      <text x={cx + 42} y={y + 42} fontSize={14} fontWeight={600} className="fill-lane font-sans">
+      <text x={cx + 42} y={y + 42} fontSize={16} fontWeight={600} className="fill-lane font-sans">
         AV
       </text>
-      <text x={cx + 42} y={y + 60} fontSize={14} className="fill-on-dark font-sans">
+      <text x={cx + 42} y={y + 60} fontSize={16} className="fill-on-dark font-sans">
         {passengers} {passengers === 1 ? "passenger" : "passengers"}
       </text>
     </g>

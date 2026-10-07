@@ -23,7 +23,7 @@ Tailwind 4 · zod · Vitest.
 ## How it works
 
 Participant flow: **consent** (`/`) → Google sign-in → `/study` (creates the participant row and
-routes to the right step) → **demographics** → **primer + 2-question comprehension check** →
+routes to the right step) → **primer + 2-question comprehension check** →
 **scenarios**, one per page, in an order shuffled once per participant and stored → **debrief**.
 
 - **One response per person.** A participant is identified by
@@ -232,7 +232,7 @@ Any other Node 22 host with managed PostgreSQL works too:
   off and its logger never prints profile data. Prisma logs only warnings and errors.
 - Consent is recorded before sign-in with a signed, httpOnly `consent_intent` cookie (30 minutes).
   It isn't used for one-response enforcement; the participant hash and the database are.
-- Write routes (`/api/demographics`, `/api/comprehension`, `/api/responses`) require
+- Write routes (`/api/comprehension`, `/api/responses`) require
   `Content-Type: application/json` and an `Origin` equal to `NEXTAUTH_URL` (CSRF protection), then
   check session → participant → not completed → current step → zod validation. There is no rate limit;
   one response per person per scenario is enforced by the database.

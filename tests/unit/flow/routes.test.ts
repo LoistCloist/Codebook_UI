@@ -19,16 +19,9 @@ vi.mock("@/lib/db", () => ({
   Prisma: { PrismaClientKnownRequestError: FakeKnownError },
 }));
 
-import { POST as postDemographics } from "@/app/api/demographics/route";
 import { POST as postComprehension } from "@/app/api/comprehension/route";
 import { POST as postResponses } from "@/app/api/responses/route";
 
-const demographics = {
-  ageRange: "age_25_34",
-  country: "DE",
-  drives: "yes",
-  ethicsCoursework: "some",
-};
 const answer = {
   scenarioId: "s02",
   utilitarian: "maintain",
@@ -51,7 +44,7 @@ beforeEach(() => {
 
 describe("shared guard order", () => {
   it("bad origin → 403 before the session is read", async () => {
-    const r = await json(await postDemographics(post(demographics, { origin: "https://evil.example" })));
+    const r = await json(await postComprehension(post({ answers: ["consequences", "fewer"] }, { origin: "https://evil.example" })));
     expect(r).toEqual({
       status: 403,
       body: { ok: false, error: "bad_origin" },
@@ -75,7 +68,7 @@ describe("shared guard order", () => {
 
   it("no session → 401", async () => {
     session.getParticipantHash.mockResolvedValue(null);
-    expect(await json(await postDemographics(post(demographics)))).toEqual({
+    expect(await json(await postComprehension(post({ answers: ["consequences", "fewer"] })))).toEqual({
       status: 401,
       body: { ok: false, error: "unauthorized", next: "/" },
     });
@@ -89,7 +82,6 @@ describe("shared guard order", () => {
   });
 
   it.each([
-    ["demographics", postDemographics, demographics],
     ["comprehension", postComprehension, { answers: ["consequences", "fewer"] }],
     ["responses", postResponses, answer],
   ] as const)("completed participant → 409 on %s, no writes", async (_n, handler, body) => {
@@ -104,66 +96,21 @@ describe("shared guard order", () => {
   });
 
   it("wrong step → 403 is checked before the body is validated", async () => {
-    withParticipant(participant()); // on demographics
+    withParticipant(participant()); // on the primer
     const r = await json(await postResponses(post("{not json")));
     expect(r).toEqual({
       status: 403,
-      body: { ok: false, error: "wrong_step", next: "/demographics" },
+      body: { ok: false, error: "wrong_step", next: "/primer" },
     });
   });
 
   it("invalid JSON → 422 invalid_json", async () => {
     withParticipant(participant());
-    expect((await json(await postDemographics(post("{bad")))).body).toMatchObject({ error: "invalid_json" });
-  });
-});
-
-describe("POST /api/demographics", () => {
-  it("saves once and points to the primer", async () => {
-    withParticipant(participant());
-    h.db.participant.updateMany.mockResolvedValue({ count: 1 });
-    expect(await json(await postDemographics(post(demographics)))).toEqual({
-      status: 200,
-      body: { ok: true, next: "/primer" },
-    });
-    const call = h.db.participant.updateMany.mock.calls[0][0];
-    expect(call.where).toMatchObject({
-      id: "p1",
-      demographicsAt: null,
-      completedAt: null,
-    });
-    expect(call.data).toMatchObject(demographics);
-    expect(call.data.demographicsAt).toBeInstanceOf(Date);
-  });
-
-  it("already saved → 409", async () => {
-    withParticipant(participant(atPrimer));
-    expect((await json(await postDemographics(post(demographics)))).status).toBe(409);
-  });
-
-  it("lost race (conditional update hit 0 rows) → 409", async () => {
-    withParticipant(participant());
-    h.db.participant.updateMany.mockResolvedValue({ count: 0 });
-    expect((await json(await postDemographics(post(demographics)))).body).toMatchObject({
-      error: "already_submitted",
-    });
-  });
-
-  it("invalid values → 422 with field names", async () => {
-    withParticipant(participant());
-    const r = await json(await postDemographics(post({ ...demographics, country: "XX", drives: "maybe" })));
-    expect(r.status).toBe(422);
-    expect(r.body.fields).toEqual(expect.arrayContaining(["country", "drives"]));
-    expect(h.db.participant.updateMany).not.toHaveBeenCalled();
+    expect((await json(await postComprehension(post("{bad")))).body).toMatchObject({ error: "invalid_json" });
   });
 });
 
 describe("POST /api/comprehension", () => {
-  it("before demographics → 403", async () => {
-    withParticipant(participant());
-    expect((await postComprehension(post({ answers: ["consequences", "fewer"] }))).status).toBe(403);
-  });
-
   it.each([
     [["consequences", "fewer"], true],
     [["duty", "fewer"], false],
@@ -228,7 +175,7 @@ describe("POST /api/responses", () => {
   it("saves a response without a Kantian answer as null", async () => {
     withParticipant(participant(atScenarios), 0);
     h.db.response.updateMany.mockResolvedValue({ count: 1 });
-    const { kantian: _omit, ...utilOnly } = answer;
+    const utilOnly = { scenarioId: answer.scenarioId, utilitarian: answer.utilitarian };
     expect((await json(await postResponses(post(utilOnly)))).body).toEqual({
       ok: true,
       next: "/scenario",

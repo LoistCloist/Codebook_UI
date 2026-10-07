@@ -10,7 +10,7 @@ export type ApiErrorCode =
   | "no_participant" // 403
   | "wrong_step" // 403
   | "study_completed" // 409
-  | "already_submitted" // 409 (demographics / comprehension)
+  | "already_submitted" // 409 (comprehension)
   | "already_answered" // 409 (scenario response)
   | "invalid_json" // 422
   | "validation"; // 422

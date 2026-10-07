@@ -4,7 +4,6 @@ import { ensureParticipant, getCurrentParticipant } from "@/lib/flow/participant
 import { serveCurrentScenario } from "@/lib/flow/scenario";
 import {
   COMPREHENSION,
-  DEMOGRAPHICS,
   answerFor,
   call,
   counts,
@@ -53,7 +52,6 @@ describe("one response per Google account", () => {
     expect(again?.step).toEqual({ kind: "completed" });
 
     const attempts = [
-      await call(routes.demographics, DEMOGRAPHICS),
       await call(routes.comprehension, COMPREHENSION),
       ...(await Promise.all(participant.scenarioOrder.map((id) => call(routes.responses, answerFor(id))))),
       await call(routes.responses, { ...answerFor(participant.scenarioOrder[0]), utilitarian: "swerve_right" }),
@@ -82,7 +80,7 @@ describe("one response per Google account", () => {
     await completeStudy("google-sub-a");
     signInAs("google-sub-b");
     const other = await ensureParticipant();
-    expect(other?.step).toEqual({ kind: "demographics" });
+    expect(other?.step).toEqual({ kind: "primer" });
     expect((await counts()).participants).toBe(2);
     expect((await getCurrentParticipant())?.participant.id).toBe(other?.participant.id);
   });

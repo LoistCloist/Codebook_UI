@@ -1,22 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { getNextStep, stepToPath, type Step } from "@/lib/flow/next-step";
-import { atPrimer, atScenarios, done, participant } from "./fixtures";
+import { atScenarios, done, participant } from "./fixtures";
 
 describe("getNextStep", () => {
   it("no participant → consent", () => {
     expect(getNextStep(null, 0)).toEqual({ kind: "consent" });
   });
 
-  it("new participant → demographics", () => {
-    expect(getNextStep(participant(), 0)).toEqual({ kind: "demographics" });
-  });
-
-  it("demographics done, primer not → primer", () => {
-    expect(getNextStep(participant(atPrimer), 0)).toEqual({ kind: "primer" });
-  });
-
-  it("primer not done blocks scenarios even if demographics done", () => {
-    expect(getNextStep(participant({ primerCompletedAt: new Date() }), 0)).toEqual({ kind: "demographics" });
+  it("new participant → primer", () => {
+    expect(getNextStep(participant(), 0)).toEqual({ kind: "primer" });
   });
 
   it("primer done, nothing answered → first scenario in stored order", () => {
@@ -60,7 +52,6 @@ describe("getNextStep", () => {
 describe("stepToPath", () => {
   const cases: [Step, string][] = [
     [{ kind: "consent" }, "/"],
-    [{ kind: "demographics" }, "/demographics"],
     [{ kind: "primer" }, "/primer"],
     [{ kind: "scenario", scenarioId: "s01", position: 0, total: 2 }, "/scenario"],
     [{ kind: "completed" }, "/completed"],

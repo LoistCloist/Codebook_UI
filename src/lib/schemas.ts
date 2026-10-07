@@ -1,7 +1,6 @@
 // Shared zod schemas. Safe to import from client components (no server-only deps).
 import { z } from "zod";
 import type * as PrismaEnums from "@/generated/prisma/enums";
-import { COUNTRY_VALUES } from "@/config/countries";
 
 export const Choice = z.enum(["maintain", "swerve_left", "swerve_right"]);
 export type Choice = z.infer<typeof Choice>;
@@ -26,18 +25,6 @@ export type EthicsCoursework = z.infer<typeof EthicsCoursework>;
 
 export const QuestionOrder = z.enum(["U_first", "K_first"]);
 export type QuestionOrder = z.infer<typeof QuestionOrder>;
-
-// ISO-3166 alpha-2 code or "prefer_not_to_say"
-export const Country = z.enum(COUNTRY_VALUES);
-export type Country = z.infer<typeof Country>;
-
-export const DemographicsInput = z.object({
-  ageRange: AgeRange,
-  country: Country,
-  drives: YesNoPnts,
-  ethicsCoursework: EthicsCoursework,
-});
-export type DemographicsInput = z.infer<typeof DemographicsInput>;
 
 export const ComprehensionInput = z.object({
   answers: z.tuple([z.string(), z.string()]),

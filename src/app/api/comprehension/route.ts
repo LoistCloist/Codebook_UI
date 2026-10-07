@@ -36,7 +36,6 @@ export async function POST(req: Request): Promise<Response> {
     where: {
       id: participant.id,
       primerCompletedAt: null,
-      demographicsAt: { not: null },
       completedAt: null,
     },
     data: {

@@ -2,7 +2,7 @@
 // PLACEHOLDER text: the researcher replaces everything marked [PLACEHOLDER].
 // Correct comprehension answers are in ./comprehension-answers.ts (server-only).
 
-import type { AgeRange, Choice, EthicsCoursework, YesNoPnts } from "@/lib/schemas";
+import type { Choice } from "@/lib/schemas";
 
 type Option<V extends string> = { value: V; label: string };
 
@@ -91,29 +91,6 @@ export const CHOICE_OPTIONS: readonly Option<Choice>[] = [
   { value: "maintain", label: "Maintain course" },
   { value: "swerve_left", label: "Swerve left" },
   { value: "swerve_right", label: "Swerve right" },
-];
-
-export const AGE_RANGE_OPTIONS: readonly Option<AgeRange>[] = [
-  { value: "age_18_24", label: "18–24" },
-  { value: "age_25_34", label: "25–34" },
-  { value: "age_35_44", label: "35–44" },
-  { value: "age_45_54", label: "45–54" },
-  { value: "age_55_64", label: "55–64" },
-  { value: "age_65_plus", label: "65 or older" },
-  { value: "prefer_not_to_say", label: "Prefer not to say" },
-];
-
-export const DRIVES_OPTIONS: readonly Option<YesNoPnts>[] = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-  { value: "prefer_not_to_say", label: "Prefer not to say" },
-];
-
-export const ETHICS_COURSEWORK_OPTIONS: readonly Option<EthicsCoursework>[] = [
-  { value: "none", label: "None" },
-  { value: "some", label: "Some" },
-  { value: "substantial", label: "Substantial" },
-  { value: "prefer_not_to_say", label: "Prefer not to say" },
 ];
 
 export const CONFIDENCE_SCALE = {

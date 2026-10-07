@@ -56,15 +56,15 @@ describe("resume where left off", () => {
     expect(await counts()).toEqual({ participants: 1, responses: 2 });
   });
 
-  it("a participant who stopped before demographics resumes at demographics with the same order", async () => {
+  it("a participant who stopped before the primer resumes at the primer with the same order", async () => {
     signInAs("google-sub-early");
     const created = await ensureParticipant();
-    expect(created?.step).toEqual({ kind: "demographics" });
+    expect(created?.step).toEqual({ kind: "primer" });
     signOut();
     signInAs("google-sub-early");
     const back = await ensureParticipant();
     expect(back?.participant.id).toBe(created?.participant.id);
     expect(back?.participant.scenarioOrder).toEqual(created?.participant.scenarioOrder);
-    expect(back?.step).toEqual({ kind: "demographics" });
+    expect(back?.step).toEqual({ kind: "primer" });
   });
 });

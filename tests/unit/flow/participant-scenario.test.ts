@@ -82,7 +82,7 @@ describe("ensureParticipant", () => {
     const created = participant();
     h.db.participant.findUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(created);
     const r = await ensureParticipant();
-    expect(r).toEqual({ participant: created, step: { kind: "demographics" } });
+    expect(r).toEqual({ participant: created, step: { kind: "primer" } });
     const data = h.db.participant.create.mock.calls[0][0].data;
     expect(data.participantHash).toBe("hash-1");
     expect(data.consentedAt).toBeInstanceOf(Date);
