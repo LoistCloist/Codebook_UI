@@ -95,8 +95,8 @@ model Response {
   servedAt          DateTime      @map("served_at") @db.Timestamptz(3)
   answeredAt        DateTime?     @map("answered_at") @db.Timestamptz(3)
 
-  // CHECK constraints (confidence 1–5, position >= 0, answered rows have both
-  // choices) live in the migration SQL; Prisma schema can't express them.
+  // CHECK constraints (confidence 1–5, position >= 0, answered rows have a
+  // utilitarian choice) live in the migration SQL; Prisma schema can't express them.
   @@unique([participantId, scenarioId])
   @@unique([participantId, position])
   @@map("responses")
