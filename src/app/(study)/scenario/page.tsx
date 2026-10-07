@@ -27,8 +27,8 @@ export default async function ScenarioPage() {
           tabIndex={0}
           className="min-[900px]:sticky min-[900px]:top-4 min-[900px]:max-h-[calc(100dvh-2rem)] min-[900px]:overflow-y-auto min-[900px]:border-r min-[900px]:border-dashed min-[900px]:border-line-strong min-[900px]:pr-7"
         >
-          <p className="mb-1 font-mono text-[13px] tracking-wide text-muted">{s.id}</p>
-          <h1 id="scenario-title" className="mb-3 text-2xl leading-snug">
+          <p className="mb-1 font-mono text-sm tracking-wide text-muted">{s.id}</p>
+          <h1 id="scenario-title" className="mb-3 text-[30px] leading-tight">
             {s.title}
           </h1>
           {s.image && (
@@ -44,11 +44,11 @@ export default async function ScenarioPage() {
             </div>
           )}
           {scene && <ScenarioDiagram scene={scene} idPrefix={s.id} />}
-          <p className="mb-4 whitespace-pre-line text-[17px] italic leading-relaxed text-muted">{s.text}</p>
+          <p className="mb-4 whitespace-pre-line text-xl italic leading-relaxed text-muted">{s.text}</p>
 
           {s.world && (
             <DetailSection id="scenario-world" heading="World state">
-              <ul className="list-disc space-y-1.5 pl-5 text-base leading-relaxed">
+              <ul className="list-disc space-y-2 pl-6 text-xl leading-relaxed">
                 {s.world.map((line, i) => (
                   <li key={i}>{line}</li>
                 ))}
@@ -57,9 +57,9 @@ export default async function ScenarioPage() {
           )}
           {s.actions && (
             <DetailSection id="scenario-actions" heading="Actions and outcomes" plain>
-              <dl className="space-y-1.5">
+              <dl className="space-y-2">
                 {CHOICE_OPTIONS.map((o) => (
-                  <div key={o.value} className="rounded border border-line bg-white px-3.5 py-2.5 text-base">
+                  <div key={o.value} className="rounded border border-line bg-white px-4 py-3 text-xl">
                     <dt className="mr-1 inline font-semibold">{o.label}:</dt>
                     <dd className="inline">{s.actions![o.value]}</dd>
                   </div>
@@ -69,7 +69,7 @@ export default async function ScenarioPage() {
           )}
           {s.features && (
             <DetailSection id="scenario-features" heading="Structurally relevant moral features">
-              <ul className="list-disc space-y-1.5 pl-5 text-base leading-relaxed">
+              <ul className="list-disc space-y-2 pl-6 text-xl leading-relaxed">
                 {s.features.map((line, i) => (
                   <li key={i}>{line}</li>
                 ))}
@@ -110,7 +110,7 @@ function DetailSection({
       aria-labelledby={id}
       className={`mb-3.5 ${plain ? "" : "rounded border border-line bg-surface px-4 py-3.5"}`}
     >
-      <h2 id={id} className="mb-2 font-mono text-[13px] font-medium uppercase tracking-wide text-muted">
+      <h2 id={id} className="mb-3 font-mono text-sm font-medium uppercase tracking-wide text-muted">
         {heading}
       </h2>
       {children}
