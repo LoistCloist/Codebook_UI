@@ -28,7 +28,10 @@ export function ComprehensionForm() {
   const items: ErrorItem[] = [
     ...[Q1, Q2]
       .filter((q) => missing.includes(q.id))
-      .map((q) => ({ message: `Answer question ${q === Q1 ? 1 : 2}`, href: fieldAnchor(q.id) })),
+      .map((q) => ({
+        message: `Answer question ${q === Q1 ? 1 : 2}`,
+        href: fieldAnchor(q.id),
+      })),
     ...(error ? [{ message: error }] : []),
   ];
 
@@ -46,6 +49,7 @@ export function ComprehensionForm() {
             </>
           }
           options={q.options}
+          size="lg"
           error={missing.includes(q.id) ? `Answer question ${i + 1}` : undefined}
         />
       ))}

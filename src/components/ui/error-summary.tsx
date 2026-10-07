@@ -2,7 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-export type ErrorItem = { message: string; /** id of the element to jump to */ href?: string };
+export type ErrorItem = {
+  message: string;
+  /** id of the element to jump to */ href?: string;
+};
 
 type Props = { title?: string; items: readonly ErrorItem[] };
 

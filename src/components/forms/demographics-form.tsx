@@ -54,7 +54,12 @@ export function DemographicsForm() {
     <form noValidate onSubmit={onSubmit} className="space-y-6">
       <ErrorSummary items={items} />
 
-      <RadioGroup name="ageRange" legend="What is your age range?" options={AGE_RANGE_OPTIONS} error={fieldErrors.ageRange} />
+      <RadioGroup
+        name="ageRange"
+        legend="What is your age range?"
+        options={AGE_RANGE_OPTIONS}
+        error={fieldErrors.ageRange}
+      />
 
       <div className={`rounded border bg-surface px-5 py-5 ${fieldErrors.country ? "border-danger" : "border-line"}`}>
         <label htmlFor="country" className="mb-3 block text-base font-semibold text-ink">

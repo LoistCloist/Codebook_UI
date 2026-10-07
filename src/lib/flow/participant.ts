@@ -8,25 +8,40 @@ import { getScenarios } from "@/lib/scenarios";
 
 // Owner: Agent 3.
 
-export type ParticipantState = { participant: Participant; step: Step; answeredCount: number };
+export type ParticipantState = {
+  participant: Participant;
+  step: Step;
+  answeredCount: number;
+};
 
 export function isUniqueViolation(err: unknown): boolean {
   return err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002";
 }
 
 export async function countAnswered(participantId: string): Promise<number> {
-  return db.response.count({ where: { participantId, answeredAt: { not: null } } });
+  return db.response.count({
+    where: { participantId, answeredAt: { not: null } },
+  });
 }
 
 /** Participant row + answered count + resolved step for a hash; null if no row exists. */
 export async function loadParticipantState(participantHash: string): Promise<ParticipantState | null> {
-  const participant = await db.participant.findUnique({ where: { participantHash } });
+  const participant = await db.participant.findUnique({
+    where: { participantHash },
+  });
   if (!participant) return null;
   const answeredCount = await countAnswered(participant.id);
-  return { participant, step: getNextStep(participant, answeredCount), answeredCount };
+  return {
+    participant,
+    step: getNextStep(participant, answeredCount),
+    answeredCount,
+  };
 }
 
-export async function getCurrentParticipant(): Promise<{ participant: Participant; step: Step } | null> {
+export async function getCurrentParticipant(): Promise<{
+  participant: Participant;
+  step: Step;
+} | null> {
   const hash = await getParticipantHash();
   if (!hash) return null;
   const state = await loadParticipantState(hash);
@@ -40,7 +55,10 @@ export async function getCurrentParticipant(): Promise<{ participant: Participan
  * Returns null if not signed in, or signed in without a participant row and
  * without valid consent.
  */
-export async function ensureParticipant(): Promise<{ participant: Participant; step: Step } | null> {
+export async function ensureParticipant(): Promise<{
+  participant: Participant;
+  step: Step;
+} | null> {
   const hash = await getParticipantHash();
   if (!hash) return null;
 
@@ -53,7 +71,12 @@ export async function ensureParticipant(): Promise<{ participant: Participant; s
   const scenarioOrder = shuffle(getScenarios().map((s) => s.id));
   try {
     await db.participant.create({
-      data: { participantHash: hash, consentedAt: now, startedAt: now, scenarioOrder },
+      data: {
+        participantHash: hash,
+        consentedAt: now,
+        startedAt: now,
+        scenarioOrder,
+      },
     });
   } catch (err) {
     // A concurrent request created the row first: the unique hash wins, use that row.

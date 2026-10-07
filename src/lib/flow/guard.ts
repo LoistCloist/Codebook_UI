@@ -9,9 +9,7 @@ import { checkRequest, fail, readJson } from "@/lib/http";
 // → correct step (403/409, route-specific) → JSON body (422).
 // The route then validates the body with zod (422) and writes.
 
-export type GuardResult =
-  | { ok: true; state: ParticipantState; body: unknown }
-  | { ok: false; response: Response };
+export type GuardResult = { ok: true; state: ParticipantState; body: unknown } | { ok: false; response: Response };
 
 /** Returns an error response if the participant may not write at this route, else null. */
 export type StepCheck = (state: ParticipantState) => Response | null;
@@ -31,7 +29,10 @@ export async function guardWrite(req: Request, checkStep: StepCheck): Promise<Gu
   if (!state) return { ok: false, response: fail(403, "no_participant", { next: "/" }) };
 
   if (state.participant.completedAt || state.step.kind === "completed") {
-    return { ok: false, response: fail(409, "study_completed", { next: "/completed" }) };
+    return {
+      ok: false,
+      response: fail(409, "study_completed", { next: "/completed" }),
+    };
   }
 
   const stepError = checkStep(state);

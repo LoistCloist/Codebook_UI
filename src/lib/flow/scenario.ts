@@ -24,7 +24,9 @@ export type ServedScenario = PublicScenario & {
  * scenario missing from data/scenarios.json (never skipped or reshuffled).
  */
 export async function serveCurrentScenario(participantId: string): Promise<ServedScenario> {
-  const participant = await db.participant.findUnique({ where: { id: participantId } });
+  const participant = await db.participant.findUnique({
+    where: { id: participantId },
+  });
   if (!participant) throw new Error("serveCurrentScenario: participant not found");
 
   const step = getNextStep(participant, await countAnswered(participantId));
@@ -40,7 +42,9 @@ export async function serveCurrentScenario(participantId: string): Promise<Serve
     );
   }
 
-  const key = { participantId_scenarioId: { participantId, scenarioId: step.scenarioId } };
+  const key = {
+    participantId_scenarioId: { participantId, scenarioId: step.scenarioId },
+  };
   const now = new Date();
 
   let row = await db.response.findUnique({ where: key });
@@ -84,5 +88,8 @@ export async function serveCurrentScenario(participantId: string): Promise<Serve
 }
 
 async function refreshServedAt(responseId: string, now: Date): Promise<void> {
-  await db.response.updateMany({ where: { id: responseId, answeredAt: null }, data: { servedAt: now } });
+  await db.response.updateMany({
+    where: { id: responseId, answeredAt: null },
+    data: { servedAt: now },
+  });
 }

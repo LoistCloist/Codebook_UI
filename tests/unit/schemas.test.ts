@@ -3,7 +3,11 @@ import { DemographicsInput, ResponseInput } from "@/lib/schemas";
 
 describe("schemas", () => {
   it("DemographicsInput accepts ISO codes and prefer_not_to_say, rejects unknown countries", () => {
-    const base = { ageRange: "age_18_24", drives: "yes", ethicsCoursework: "none" };
+    const base = {
+      ageRange: "age_18_24",
+      drives: "yes",
+      ethicsCoursework: "none",
+    };
     expect(DemographicsInput.safeParse({ ...base, country: "MM" }).success).toBe(true);
     expect(DemographicsInput.safeParse({ ...base, country: "prefer_not_to_say" }).success).toBe(true);
     expect(DemographicsInput.safeParse({ ...base, country: "XX" }).success).toBe(false);
@@ -11,7 +15,11 @@ describe("schemas", () => {
   });
 
   it("ResponseInput bounds confidence to integers 1–5", () => {
-    const base = { scenarioId: "s01", utilitarian: "maintain", kantian: "swerve_left" };
+    const base = {
+      scenarioId: "s01",
+      utilitarian: "maintain",
+      kantian: "swerve_left",
+    };
     expect(ResponseInput.safeParse(base).success).toBe(true);
     expect(ResponseInput.safeParse({ ...base, confidence: 5 }).success).toBe(true);
     expect(ResponseInput.safeParse({ ...base, confidence: 6 }).success).toBe(false);

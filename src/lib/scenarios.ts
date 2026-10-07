@@ -12,7 +12,11 @@ const TheoryKey = z
 const Line = z.string().trim().min(1);
 
 /** Outcome text for each available action, e.g. "kills 1 cyclist on the left". */
-const ScenarioActions = z.strictObject({ maintain: Line, swerve_left: Line, swerve_right: Line });
+const ScenarioActions = z.strictObject({
+  maintain: Line,
+  swerve_left: Line,
+  swerve_right: Line,
+});
 
 export const ScenarioSchema = z.strictObject({
   id: z.string().regex(/^[A-Za-z0-9_-]+$/, "id may only contain letters, digits, _ and -"),
@@ -30,7 +34,7 @@ export const ScenarioSchema = z.strictObject({
   actions: ScenarioActions.optional(),
   features: z.array(Line).min(1).optional(),
   /** Needed for scoring; scenarios without one are excluded from agreement (startup warns). */
-  answerKey: z.strictObject({ utilitarian: TheoryKey, kantian: TheoryKey }).optional(),
+  answerKey: z.strictObject({ utilitarian: TheoryKey, kantian: TheoryKey.optional() }).optional(),
 });
 
 export const ScenariosFileSchema = z
@@ -39,7 +43,12 @@ export const ScenariosFileSchema = z
   .superRefine((list, ctx) => {
     const seen = new Set<string>();
     list.forEach((s, i) => {
-      if (seen.has(s.id)) ctx.addIssue({ code: "custom", path: [i, "id"], message: `duplicate id "${s.id}"` });
+      if (seen.has(s.id))
+        ctx.addIssue({
+          code: "custom",
+          path: [i, "id"],
+          message: `duplicate id "${s.id}"`,
+        });
       seen.add(s.id);
     });
   });
@@ -64,9 +73,7 @@ const PUBLIC_DIR = path.join(process.cwd(), "public");
 export function parseScenarios(raw: unknown, opts: { publicDir?: string } = {}): Scenario[] {
   const result = ScenariosFileSchema.safeParse(raw);
   if (!result.success) {
-    const problems = result.error.issues
-      .map((i) => `  - [${i.path.join(".") || "(root)"}] ${i.message}`)
-      .join("\n");
+    const problems = result.error.issues.map((i) => `  - [${i.path.join(".") || "(root)"}] ${i.message}`).join("\n");
     throw new Error(`data/scenarios.json is malformed:\n${problems}`);
   }
   if (opts.publicDir) {

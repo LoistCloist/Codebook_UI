@@ -22,21 +22,31 @@ export const study = {
   consent: {
     purpose:
       "[PLACEHOLDER] This study asks how people apply utilitarian and Kantian ethics to dilemmas faced by self-driving cars.",
-    // [PLACEHOLDER] 50 scenarios × 2 questions; confirm against a pilot run.
-    estimatedMinutes: 40,
+    // [PLACEHOLDER] confirm against a pilot run.
+    estimatedMinutes: 10,
     anonymity:
       "[PLACEHOLDER] Your responses are anonymous. We sign you in with Google only to make sure each person responds once; we do not store your email address, name or profile picture.",
-    rightToStop:
-      "[PLACEHOLDER] Taking part is voluntary. You may stop at any time without giving a reason.",
+    rightToStop: "[PLACEHOLDER] Taking part is voluntary. You may stop at any time without giving a reason.",
     eligibility: "You must be 18 or older to take part.",
     checkboxLabel: "I am 18 or older, I have read the information above, and I consent to take part.",
   },
 
+  /** Utilitarianism summarised as big rule boxes on the primer page. */
   primer: {
-    utilitarianism:
-      "[PLACEHOLDER] Utilitarianism holds that the right action is the one that produces the best overall consequences, typically the greatest well-being for the greatest number.",
-    kantianEthics:
-      "[PLACEHOLDER] Kantian ethics holds that some actions are right or wrong in themselves, regardless of consequences. Persons must always be treated as ends, never merely as means.",
+    rules: [
+      {
+        title: "Judge by consequences",
+        body: "An action is right or wrong only because of its outcomes, not because of intentions or fixed rules.",
+      },
+      {
+        title: "Everyone counts equally",
+        body: "Each person's well-being counts the same. No one's safety matters more than anyone else's.",
+      },
+      {
+        title: "Choose the greatest overall good",
+        body: "Pick the action that produces the best total outcome, for example the one that harms the fewest people.",
+      },
+    ],
   },
 
   /** Exactly 2 questions (ComprehensionInput is a 2-tuple). Answers are submitted by option value. */
@@ -52,16 +62,20 @@ export const study = {
     },
     {
       id: "q2",
-      prompt: "[PLACEHOLDER] According to Kantian ethics, may a person be used merely as a means to an end?",
+      prompt:
+        "A utilitarian self-driving car must choose between harming 1 person or harming 3 people. What should it do?",
       options: [
-        { value: "yes_if_better", label: "Yes, if it leads to better outcomes" },
-        { value: "never", label: "No, never merely as a means" },
-        { value: "if_consent_unknown", label: "Only if their wishes are unknown" },
+        { value: "fewer", label: "Harm 1 person, so fewer people are harmed" },
+        { value: "follow_rule", label: "Stay on its course, whatever happens" },
+        {
+          value: "protect_passenger",
+          label: "Always protect its own passenger first",
+        },
       ],
     },
   ],
 
-  /** Rulebook describing both frameworks, linked from the primer and every scenario (public/rulebook.pdf). */
+  /** Rulebook, linked from the primer and embedded on every scenario (public/rulebook.pdf). */
   rulebookPdf: "/rulebook.pdf",
 
   debrief: {
@@ -102,4 +116,9 @@ export const ETHICS_COURSEWORK_OPTIONS: readonly Option<EthicsCoursework>[] = [
   { value: "prefer_not_to_say", label: "Prefer not to say" },
 ];
 
-export const CONFIDENCE_SCALE = { min: 1, max: 5, minLabel: "Not at all confident", maxLabel: "Very confident" } as const;
+export const CONFIDENCE_SCALE = {
+  min: 1,
+  max: 5,
+  minLabel: "Not at all confident",
+  maxLabel: "Very confident",
+} as const;

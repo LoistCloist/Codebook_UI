@@ -49,7 +49,15 @@ describe("csvCell formula-injection guard", () => {
 
 describe("toCsv", () => {
   it("joins header and rows with CRLF and a trailing CRLF", () => {
-    expect(toCsv(["a", "b"], [[1, null], ["x,y", "=1"]])).toBe('a,b\r\n1,\r\n"x,y",\'=1\r\n');
+    expect(
+      toCsv(
+        ["a", "b"],
+        [
+          [1, null],
+          ["x,y", "=1"],
+        ],
+      ),
+    ).toBe('a,b\r\n1,\r\n"x,y",\'=1\r\n');
   });
 
   it("returns just the header when there are no rows", () => {

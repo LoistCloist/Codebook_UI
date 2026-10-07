@@ -4,7 +4,10 @@ import { agreement, scoreResponse, type AnswerKey, type QResponse } from "@/lib/
 const keys: Record<string, AnswerKey> = {
   s01: { utilitarian: ["swerve_right"], kantian: ["maintain"] },
   s02: { utilitarian: ["swerve_right"], kantian: ["maintain", "swerve_right"] },
-  s03: { utilitarian: ["maintain", "swerve_left", "swerve_right"], kantian: ["swerve_left"] },
+  s03: {
+    utilitarian: ["maintain", "swerve_left", "swerve_right"],
+    kantian: ["swerve_left"],
+  },
 };
 
 describe("scoreResponse", () => {
@@ -27,7 +30,14 @@ describe("scoreResponse", () => {
       });
     }
     expect(
-      scoreResponse({ scenarioId: "s02", utilitarian: "swerve_right", kantian: "swerve_left" }, keys.s02),
+      scoreResponse(
+        {
+          scenarioId: "s02",
+          utilitarian: "swerve_right",
+          kantian: "swerve_left",
+        },
+        keys.s02,
+      ),
     ).toEqual({ utilitarianCorrect: true, kantianCorrect: false });
   });
 
@@ -63,11 +73,25 @@ describe("agreement", () => {
 
   it("rounds to 2 decimals on a 0–100 scale", () => {
     // U: s01 ✓, s02 ✗, s03 ✓ (key lists every choice) = 2/3; K: s01 ✓, s02 ✓, s03 ✗ = 2/3
-    const rs = [q("s01", "swerve_right", "maintain"), q("s02", "maintain", "maintain"), q("s03", "maintain", "maintain")];
-    expect(agreement(rs, keys)).toEqual({ utilitarianPct: 66.67, kantianPct: 66.67 });
+    const rs = [
+      q("s01", "swerve_right", "maintain"),
+      q("s02", "maintain", "maintain"),
+      q("s03", "maintain", "maintain"),
+    ];
+    expect(agreement(rs, keys)).toEqual({
+      utilitarianPct: 66.67,
+      kantianPct: 66.67,
+    });
     // U: only s03 ✓ = 1/3; K: none ✓ = 0/3
-    const rs2 = [q("s01", "maintain", "swerve_left"), q("s02", "maintain", "swerve_left"), q("s03", "swerve_left", "maintain")];
-    expect(agreement(rs2, keys)).toEqual({ utilitarianPct: 33.33, kantianPct: 0 });
+    const rs2 = [
+      q("s01", "maintain", "swerve_left"),
+      q("s02", "maintain", "swerve_left"),
+      q("s03", "swerve_left", "maintain"),
+    ];
+    expect(agreement(rs2, keys)).toEqual({
+      utilitarianPct: 33.33,
+      kantianPct: 0,
+    });
   });
 
   it("rounds half up consistently", () => {
@@ -76,7 +100,10 @@ describe("agreement", () => {
       Array.from({ length: n }, (_, i) => q(`x${i}`, i < correct ? "maintain" : "swerve_left", "maintain"));
     const keysFor = (n: number) =>
       Object.fromEntries(
-        Array.from({ length: n }, (_, i) => [`x${i}`, { utilitarian: ["maintain"], kantian: ["maintain"] } as AnswerKey]),
+        Array.from({ length: n }, (_, i) => [
+          `x${i}`,
+          { utilitarian: ["maintain"], kantian: ["maintain"] } as AnswerKey,
+        ]),
       );
     expect(agreement(many(8, 1), keysFor(8)).utilitarianPct).toBe(12.5);
     expect(agreement(many(16, 1), keysFor(16)).utilitarianPct).toBe(6.25);
@@ -88,23 +115,37 @@ describe("agreement", () => {
   });
 
   it("counts multi-correct keys as correct", () => {
-    expect(agreement([q("s02", "swerve_right", "maintain"), q("s02b", "swerve_right", "swerve_right")], {
-      s02: keys.s02,
-      s02b: keys.s02,
-    })).toEqual({ utilitarianPct: 100, kantianPct: 100 });
+    expect(
+      agreement([q("s02", "swerve_right", "maintain"), q("s02b", "swerve_right", "swerve_right")], {
+        s02: keys.s02,
+        s02b: keys.s02,
+      }),
+    ).toEqual({ utilitarianPct: 100, kantianPct: 100 });
   });
 
   it("excludes responses whose scenario has no key from both counts", () => {
     const rs = [q("s01", "swerve_right", "maintain"), q("gone", "maintain", "swerve_left")];
-    expect(agreement(rs, keys)).toEqual({ utilitarianPct: 100, kantianPct: 100 });
+    expect(agreement(rs, keys)).toEqual({
+      utilitarianPct: 100,
+      kantianPct: 100,
+    });
   });
 
   it("ignores inherited object keys such as toString", () => {
-    expect(agreement([q("toString", "maintain", "maintain")], keys)).toEqual({ utilitarianPct: NaN, kantianPct: NaN });
+    expect(agreement([q("toString", "maintain", "maintain")], keys)).toEqual({
+      utilitarianPct: NaN,
+      kantianPct: NaN,
+    });
   });
 
   it("returns NaN when nothing can be scored", () => {
-    expect(agreement([], keys)).toEqual({ utilitarianPct: NaN, kantianPct: NaN });
-    expect(agreement([q("gone", "maintain", "maintain")], keys)).toEqual({ utilitarianPct: NaN, kantianPct: NaN });
+    expect(agreement([], keys)).toEqual({
+      utilitarianPct: NaN,
+      kantianPct: NaN,
+    });
+    expect(agreement([q("gone", "maintain", "maintain")], keys)).toEqual({
+      utilitarianPct: NaN,
+      kantianPct: NaN,
+    });
   });
 });

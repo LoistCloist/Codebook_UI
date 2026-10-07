@@ -36,8 +36,12 @@ type Analysed = {
 };
 
 function toQResponse(r: Response): QResponse | null {
-  if (!r.answeredAt || !r.utilitarianChoice || !r.kantianChoice) return null;
-  return { scenarioId: r.scenarioId, utilitarian: r.utilitarianChoice, kantian: r.kantianChoice };
+  if (!r.answeredAt || !r.utilitarianChoice) return null;
+  return {
+    scenarioId: r.scenarioId,
+    utilitarian: r.utilitarianChoice,
+    kantian: r.kantianChoice ?? undefined,
+  };
 }
 
 export function analyse(participants: AdminParticipant[], keys: AnswerKeys): Analysed[] {
@@ -48,7 +52,10 @@ export function analyse(participants: AdminParticipant[], keys: AnswerKeys): Ana
   const groups = findDuplicateGroups(
     base
       .filter((b) => b.p.completedAt)
-      .map((b) => ({ participantId: b.p.id, answerString: buildAnswerString(b.answered) })),
+      .map((b) => ({
+        participantId: b.p.id,
+        answerString: buildAnswerString(b.answered),
+      })),
   );
   return base.map(({ p, answered }) => {
     const pct = agreement(answered, keys);
@@ -87,8 +94,7 @@ export function computeStats(participants: AdminParticipant[], keys: AnswerKeys)
 
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
 /** Seconds between two timestamps (ms precision kept), or null if either is missing. */
-const seconds = (from: Date | null, to: Date | null) =>
-  from && to ? (to.getTime() - from.getTime()) / 1000 : null;
+const seconds = (from: Date | null, to: Date | null) => (from && to ? (to.getTime() - from.getTime()) / 1000 : null);
 /** Agent 1 returns NaN for a theory with nothing scored; csvCell renders NaN as blank. */
 const pct = (n: number) => (Number.isFinite(n) ? n.toFixed(2) : null);
 

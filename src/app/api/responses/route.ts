@@ -10,7 +10,10 @@ export async function POST(req: Request): Promise<Response> {
   if (!guard.ok) return guard.response;
 
   const parsed = ResponseInput.safeParse(guard.body);
-  if (!parsed.success) return fail(422, "validation", { fields: issueFields(parsed.error.issues) });
+  if (!parsed.success)
+    return fail(422, "validation", {
+      fields: issueFields(parsed.error.issues),
+    });
   const input = parsed.data;
 
   // own/confidence are required iff their flag is on, and rejected when it's off.
@@ -24,12 +27,15 @@ export async function POST(req: Request): Promise<Response> {
 
   if (input.scenarioId !== step.scenarioId) {
     const earlier = await db.response.findUnique({
-      where: { participantId_scenarioId: { participantId: participant.id, scenarioId: input.scenarioId } },
+      where: {
+        participantId_scenarioId: {
+          participantId: participant.id,
+          scenarioId: input.scenarioId,
+        },
+      },
       select: { answeredAt: true },
     });
-    return earlier?.answeredAt
-      ? fail(409, "already_answered", { next: "/scenario" })
-      : wrongStep(guard.state);
+    return earlier?.answeredAt ? fail(409, "already_answered", { next: "/scenario" }) : wrongStep(guard.state);
   }
 
   const now = new Date();
@@ -43,7 +49,7 @@ export async function POST(req: Request): Promise<Response> {
       },
       data: {
         utilitarianChoice: input.utilitarian,
-        kantianChoice: input.kantian,
+        kantianChoice: input.kantian ?? null,
         ownChoice: input.own ?? null,
         confidence: input.confidence ?? null,
         answeredAt: now,
@@ -51,7 +57,9 @@ export async function POST(req: Request): Promise<Response> {
     });
     if (saved.count === 0) return { saved: false as const, completed: false };
 
-    const answered = await tx.response.count({ where: { participantId: participant.id, answeredAt: { not: null } } });
+    const answered = await tx.response.count({
+      where: { participantId: participant.id, answeredAt: { not: null } },
+    });
     if (answered < participant.scenarioOrder.length) return { saved: true as const, completed: false };
 
     await tx.participant.updateMany({
@@ -63,7 +71,12 @@ export async function POST(req: Request): Promise<Response> {
 
   if (!result.saved) {
     const row = await db.response.findUnique({
-      where: { participantId_scenarioId: { participantId: participant.id, scenarioId: step.scenarioId } },
+      where: {
+        participantId_scenarioId: {
+          participantId: participant.id,
+          scenarioId: step.scenarioId,
+        },
+      },
       select: { answeredAt: true },
     });
     // Answered by a concurrent request → 409; never served (no row) → wrong step.

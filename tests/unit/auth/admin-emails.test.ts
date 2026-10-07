@@ -3,10 +3,7 @@ import { isAdminEmail, parseAdminEmails } from "@/lib/auth/admin-emails";
 
 describe("parseAdminEmails", () => {
   it("trims, lower-cases and drops blanks", () => {
-    expect([...parseAdminEmails("  Alice@Example.com, ,bob@x.org ,,  ")]).toEqual([
-      "alice@example.com",
-      "bob@x.org",
-    ]);
+    expect([...parseAdminEmails("  Alice@Example.com, ,bob@x.org ,,  ")]).toEqual(["alice@example.com", "bob@x.org"]);
   });
 
   it("handles empty / missing input", () => {

@@ -1,16 +1,12 @@
 import "server-only";
 import { z } from "zod";
 
-const secret = (name: string) =>
-  z.string().min(32, `${name} must be at least 32 characters (openssl rand -hex 32)`);
+const secret = (name: string) => z.string().min(32, `${name} must be at least 32 characters (openssl rand -hex 32)`);
 
-const postgresUrl = z
-  .string()
-  .regex(/^postgres(ql)?:\/\//, "must be a postgres:// or postgresql:// URL");
+const postgresUrl = z.string().regex(/^postgres(ql)?:\/\//, "must be a postgres:// or postgresql:// URL");
 
 // Blank values (e.g. `FOO=""` copied from .env.example) count as unset for optional vars.
-const optional = <T extends z.ZodType>(schema: T) =>
-  z.preprocess((v) => (v === "" ? undefined : v), schema.optional());
+const optional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => (v === "" ? undefined : v), schema.optional());
 
 export const EnvSchema = z
   .object({
@@ -23,7 +19,11 @@ export const EnvSchema = z
     DATABASE_POOL_MAX: optional(z.coerce.number().int().min(1).max(50)),
     // PEM of the database's root CA (e.g. Supabase's). When set, TLS is required and the
     // server certificate is verified against it. Don't also put sslmode in DATABASE_URL.
-    DATABASE_SSL_CA: optional(z.string().includes("BEGIN CERTIFICATE", { message: "must be a PEM certificate" })),
+    DATABASE_SSL_CA: optional(
+      z.string().includes("BEGIN CERTIFICATE", {
+        message: "must be a PEM certificate",
+      }),
+    ),
     TEST_DATABASE_URL: optional(postgresUrl),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
@@ -45,9 +45,7 @@ export type Env = z.infer<typeof EnvSchema>;
 export function parseEnv(source: Record<string, string | undefined>): Env {
   const result = EnvSchema.safeParse(source);
   if (!result.success) {
-    const problems = result.error.issues
-      .map((i) => `  - ${i.path.join(".") || "(root)"}: ${i.message}`)
-      .join("\n");
+    const problems = result.error.issues.map((i) => `  - ${i.path.join(".") || "(root)"}: ${i.message}`).join("\n");
     throw new Error(`Invalid environment variables:\n${problems}`);
   }
   return result.data;

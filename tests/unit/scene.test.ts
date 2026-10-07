@@ -11,7 +11,10 @@ const actions = (maintain: string, swerve_left: string, swerve_right = "kills 2 
 describe("parseScene", () => {
   it("parses people lists with and without the Oxford comma", () => {
     const s = parseScene(
-      actions("kills 2 adult pedestrians, 1 child pedestrian, and 1 cyclist ahead", "kills 1 adult pedestrian and 1 motorcyclist on the left"),
+      actions(
+        "kills 2 adult pedestrians, 1 child pedestrian, and 1 cyclist ahead",
+        "kills 1 adult pedestrian and 1 motorcyclist on the left",
+      ),
     )!;
     expect(s.ahead).toEqual({
       kind: "people",
@@ -32,7 +35,9 @@ describe("parseScene", () => {
   });
 
   it("maps special road users and keeps unknown ones as generic people", () => {
-    const s = parseScene(actions("kills 1 road construction worker and 1 alien ahead", "kills 1 teenage cyclist on the left"))!;
+    const s = parseScene(
+      actions("kills 1 road construction worker and 1 alien ahead", "kills 1 teenage cyclist on the left"),
+    )!;
     expect(s.ahead).toEqual({
       kind: "people",
       figures: [
@@ -44,12 +49,16 @@ describe("parseScene", () => {
   });
 
   it("recognises vehicles with occupants", () => {
-    expect(parseScene(actions("kills 1 child pedestrian ahead", "kills 3 vehicle occupants on the left"))!.left).toEqual({
+    expect(
+      parseScene(actions("kills 1 child pedestrian ahead", "kills 3 vehicle occupants on the left"))!.left,
+    ).toEqual({
       kind: "vehicle",
       vehicle: "car",
       occupants: 3,
     });
-    expect(parseScene(actions("kills 1 child pedestrian ahead", "kills 2 motorcycle riders on the left"))!.left).toEqual({
+    expect(
+      parseScene(actions("kills 1 child pedestrian ahead", "kills 2 motorcycle riders on the left"))!.left,
+    ).toEqual({
       kind: "vehicle",
       vehicle: "motorcycle",
       occupants: 2,
@@ -57,7 +66,10 @@ describe("parseScene", () => {
   });
 
   it("accepts a single passenger", () => {
-    expect(parseScene(actions("kills 1 cyclist ahead", "kills 1 cyclist on the left", "kills 1 passenger in the AV"))!.passengers).toBe(1);
+    expect(
+      parseScene(actions("kills 1 cyclist ahead", "kills 1 cyclist on the left", "kills 1 passenger in the AV"))!
+        .passengers,
+    ).toBe(1);
   });
 
   it("returns null for anything it doesn't recognise", () => {
@@ -69,7 +81,13 @@ describe("parseScene", () => {
   });
 
   it("describes the scene in words", () => {
-    const s = parseScene(actions("kills 1 adult pedestrian and 1 cyclist ahead", "kills 3 vehicle occupants on the left", "kills 1 passenger in the AV"))!;
+    const s = parseScene(
+      actions(
+        "kills 1 adult pedestrian and 1 cyclist ahead",
+        "kills 3 vehicle occupants on the left",
+        "kills 1 passenger in the AV",
+      ),
+    )!;
     expect(describeScene(s)).toBe(
       "Top-down road diagram. Directly ahead of the AV: 1 adult pedestrian and 1 cyclist. " +
         "To the left: a car with 3 occupants. To the right: a rigid barrier. The AV carries 1 passenger.",
@@ -78,7 +96,8 @@ describe("parseScene", () => {
 });
 
 describe("every scenario in data/scenarios.json gets a diagram", () => {
-  const TITLE = /^(\d+) \S+ \S+ on current path vs (\d+) .+ on diverted path vs (\d+) passengers? in self-sacrifice path$/;
+  const TITLE =
+    /^(\d+) \S+ \S+ on current path vs (\d+) .+ on diverted path vs (\d+) passengers? in self-sacrifice path$/;
 
   it.each(getScenarios().map((s) => [s.id, s] as const))("%s parses and matches its title", (_id, s) => {
     expect(s.actions).toBeDefined();
@@ -86,6 +105,10 @@ describe("every scenario in data/scenarios.json gets a diagram", () => {
     expect(scene).not.toBeNull();
     const m = TITLE.exec(s.title);
     expect(m, `title didn't match the expected pattern: ${s.title}`).not.toBeNull();
-    expect([groupSize(scene!.ahead), groupSize(scene!.left), scene!.passengers]).toEqual([Number(m![1]), Number(m![2]), Number(m![3])]);
+    expect([groupSize(scene!.ahead), groupSize(scene!.left), scene!.passengers]).toEqual([
+      Number(m![1]),
+      Number(m![2]),
+      Number(m![3]),
+    ]);
   });
 });

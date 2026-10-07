@@ -27,9 +27,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
   return (
     <>
-      {message && (
-        <ErrorSummary items={[{ message, href: code === "consent" ? "consent" : undefined }]} />
-      )}
+      {message && <ErrorSummary items={[{ message, href: code === "consent" ? "consent" : undefined }]} />}
       <DarkPanel>
         <Kicker>AV CRASH-DECISION RULEBOOK · RESEARCH STUDY</Kicker>
         <h1 className="mb-6 text-[28px] leading-tight sm:text-[32px]">{study.title}</h1>
@@ -76,8 +74,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             </label>
           </div>
           <p className="text-[12.5px] text-on-dark-muted">
-            You&apos;ll sign in with Google so that each person takes part only once. We don&apos;t store your
-            email address, name or profile picture.
+            You&apos;ll sign in with Google so that each person takes part only once. We don&apos;t store your email
+            address, name or profile picture.
           </p>
           <SubmitButton pendingLabel="Redirecting to Google…">Consent and sign in with Google</SubmitButton>
         </form>

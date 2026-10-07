@@ -1,10 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  CONSENT_COOKIE,
-  CONSENT_MAX_AGE_SEC,
-  signConsentValue,
-  verifyConsentValue,
-} from "@/lib/auth/consent-cookie";
+import { CONSENT_COOKIE, CONSENT_MAX_AGE_SEC, signConsentValue, verifyConsentValue } from "@/lib/auth/consent-cookie";
 
 const S = "s".repeat(32);
 const NOW = 1_800_000_000_000;

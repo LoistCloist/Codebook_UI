@@ -61,7 +61,16 @@ describe("jwt callback", () => {
 
   it("on later calls strips anything but the two claims", () => {
     const t = cb.jwt({
-      token: { participantHash: "abc", isAdmin: true, email: EMAIL, name: NAME, picture: PIC, sub: SUB, iat: 1, exp: 2 },
+      token: {
+        participantHash: "abc",
+        isAdmin: true,
+        email: EMAIL,
+        name: NAME,
+        picture: PIC,
+        sub: SUB,
+        iat: 1,
+        exp: 2,
+      },
     });
     expect(t).toEqual({ participantHash: "abc", isAdmin: true });
   });

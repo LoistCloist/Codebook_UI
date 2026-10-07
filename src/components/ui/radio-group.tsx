@@ -35,14 +35,17 @@ type Props = {
   /** Lay options out in a row on wider screens (e.g. a 1–5 scale). */
   inline?: boolean;
   tone?: Tone;
+  /** Larger question and option text (study questions). */
+  size?: "lg";
 };
 
 /** Accessible radio group: fieldset/legend, whole-row labels with 44px+ tap targets. */
-export function RadioGroup({ name, legend, options, hint, error, disabled, inline, tone }: Props) {
+export function RadioGroup({ name, legend, options, hint, error, disabled, inline, tone, size }: Props) {
   const hintId = hint ? `${name}-hint` : undefined;
   const errorId = error ? `${name}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
   const t = TONES[tone ?? "neutral"];
+  const lg = size === "lg";
   return (
     <fieldset
       className={`rounded border bg-surface px-5 py-5 ${error ? "border-danger" : "border-line"} ${t.block}`}
@@ -50,7 +53,9 @@ export function RadioGroup({ name, legend, options, hint, error, disabled, inlin
       aria-invalid={error ? true : undefined}
       disabled={disabled}
     >
-      <legend className="float-left mb-4 w-full text-base font-medium leading-snug text-ink">{legend}</legend>
+      <legend className={`float-left mb-4 w-full font-medium leading-snug text-ink ${lg ? "text-xl" : "text-base"}`}>
+        {legend}
+      </legend>
       {hint && (
         <p id={hintId} className="clear-left mb-3 text-sm text-muted">
           {hint}
@@ -69,16 +74,9 @@ export function RadioGroup({ name, legend, options, hint, error, disabled, inlin
             <label
               key={o.value}
               htmlFor={id}
-              className={`flex min-h-11 cursor-pointer items-center gap-3 rounded border border-line-strong bg-white px-3.5 py-2.5 text-[15px] transition-colors hover:bg-page ${t.option} ${inline ? "sm:flex-1" : ""}`}
+              className={`flex min-h-11 cursor-pointer items-center gap-3 rounded border border-line-strong bg-white px-3.5 py-2.5 ${lg ? "text-[17px]" : "text-[15px]"} transition-colors hover:bg-page ${t.option} ${inline ? "sm:flex-1" : ""}`}
             >
-              <input
-                id={id}
-                type="radio"
-                name={name}
-                value={o.value}
-                required
-                className="size-4 shrink-0 accent-ink"
-              />
+              <input id={id} type="radio" name={name} value={o.value} required className="size-4 shrink-0 accent-ink" />
               <span>{o.label}</span>
             </label>
           );

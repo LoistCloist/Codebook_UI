@@ -15,7 +15,10 @@ export async function POST(req: Request): Promise<Response> {
   if (!guard.ok) return guard.response;
 
   const parsed = DemographicsInput.safeParse(guard.body);
-  if (!parsed.success) return fail(422, "validation", { fields: issueFields(parsed.error.issues) });
+  if (!parsed.success)
+    return fail(422, "validation", {
+      fields: issueFields(parsed.error.issues),
+    });
 
   const { participant, answeredCount } = guard.state;
   const now = new Date();

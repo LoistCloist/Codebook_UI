@@ -16,23 +16,38 @@ export type ApiErrorCode =
   | "validation"; // 422
 
 export type ApiOk = { ok: true; next: string };
-export type ApiErr = { ok: false; error: ApiErrorCode; next?: string; fields?: string[] };
+export type ApiErr = {
+  ok: false;
+  error: ApiErrorCode;
+  next?: string;
+  fields?: string[];
+};
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
 export function ok(next: string): Response {
-  return Response.json({ ok: true, next } satisfies ApiOk, { status: 200, headers: NO_STORE });
+  return Response.json({ ok: true, next } satisfies ApiOk, {
+    status: 200,
+    headers: NO_STORE,
+  });
 }
 
 export function fail(
   status: number,
   error: ApiErrorCode,
-  extra: { next?: string; fields?: string[]; headers?: Record<string, string> } = {},
+  extra: {
+    next?: string;
+    fields?: string[];
+    headers?: Record<string, string>;
+  } = {},
 ): Response {
   const body: ApiErr = { ok: false, error };
   if (extra.next !== undefined) body.next = extra.next;
   if (extra.fields !== undefined) body.fields = extra.fields;
-  return Response.json(body, { status, headers: { ...NO_STORE, ...extra.headers } });
+  return Response.json(body, {
+    status,
+    headers: { ...NO_STORE, ...extra.headers },
+  });
 }
 
 /** The site's own origin, from NEXTAUTH_URL. */

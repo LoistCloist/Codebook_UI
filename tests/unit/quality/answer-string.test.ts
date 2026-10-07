@@ -13,8 +13,16 @@ describe("buildAnswerString", () => {
   it("sorts by scenario ID, not by display order", () => {
     const displayOrder: QResponse[] = [
       { scenarioId: "s03", utilitarian: "maintain", kantian: "maintain" },
-      { scenarioId: "s01", utilitarian: "swerve_left", kantian: "swerve_right" },
-      { scenarioId: "s02", utilitarian: "swerve_right", kantian: "swerve_left" },
+      {
+        scenarioId: "s01",
+        utilitarian: "swerve_left",
+        kantian: "swerve_right",
+      },
+      {
+        scenarioId: "s02",
+        utilitarian: "swerve_right",
+        kantian: "swerve_left",
+      },
     ];
     expect(buildAnswerString(displayOrder)).toBe(
       "s01:U=swerve_left,K=swerve_right|s02:U=swerve_right,K=swerve_left|s03:U=maintain,K=maintain",
@@ -38,7 +46,11 @@ describe("buildAnswerString", () => {
       { scenarioId: "s10", utilitarian: "maintain", kantian: "maintain" },
       { scenarioId: "B", utilitarian: "maintain", kantian: "maintain" },
     ];
-    expect(buildAnswerString(rs).split("|").map((p) => p.split(":")[0])).toEqual(["B", "b", "s10", "s2"]);
+    expect(
+      buildAnswerString(rs)
+        .split("|")
+        .map((p) => p.split(":")[0]),
+    ).toEqual(["B", "b", "s10", "s2"]);
   });
 
   it("does not mutate its input", () => {

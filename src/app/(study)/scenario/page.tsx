@@ -3,11 +3,10 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import { requireStep } from "@/components/server/require-step";
 import { serveCurrentScenario } from "@/lib/flow/scenario";
-import { Progress } from "@/components/ui/progress";
 import { ScenarioForm } from "@/components/forms/scenario-form";
 import { ScenarioDiagram } from "@/components/scenario/scenario-diagram";
 import { parseScene } from "@/lib/scene";
-import { CHOICE_OPTIONS, study } from "@/config/study";
+import { CHOICE_OPTIONS } from "@/config/study";
 
 export const metadata: Metadata = { title: "Scenario" };
 
@@ -15,13 +14,12 @@ export default async function ScenarioPage() {
   const { participant } = await requireStep("/scenario");
   const s = await serveCurrentScenario(participant.id);
   const alt = s.imageAlt ?? s.title;
-  const current = s.position + 1; // position is 0-based
+  const isLast = s.position + 1 === s.total; // position is 0-based
   // A hand-made image wins; otherwise draw the scene from the action outcomes when they parse.
   const scene = !s.image && s.actions ? parseScene(s.actions) : null;
 
   return (
     <div data-wide>
-      <Progress current={current} total={s.total} />
       <div className="grid gap-8 min-[900px]:grid-cols-[1.15fr_1fr] min-[900px]:items-start">
         {/* Left: the scenario. On wide screens it stays in view and scrolls on its own. */}
         <article
@@ -35,7 +33,14 @@ export default async function ScenarioPage() {
           </h1>
           {s.image && (
             <div className="relative mb-4 aspect-video w-full overflow-hidden rounded border border-line bg-surface">
-              <Image src={s.image} alt={alt} fill sizes="(max-width: 900px) 100vw, 700px" className="object-contain" priority />
+              <Image
+                src={s.image}
+                alt={alt}
+                fill
+                sizes="(max-width: 900px) 100vw, 700px"
+                className="object-contain"
+                priority
+              />
             </div>
           )}
           {scene && <ScenarioDiagram scene={scene} idPrefix={s.id} />}
@@ -73,25 +78,14 @@ export default async function ScenarioPage() {
           )}
         </article>
 
-        {/* Right: the questions. */}
+        {/* Right: the question, with the rulebook under it. */}
         <div>
-          <p className="mb-4 flex justify-end">
-            <a
-              href={study.rulebookPdf}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex min-h-9 items-center rounded-full border border-line-strong bg-white px-3.5 font-mono text-[12.5px] text-ink no-underline hover:bg-page hover:text-ink"
-            >
-              View rulebook (PDF, opens in a new tab)
-            </a>
-          </p>
           <ScenarioForm
             key={s.id}
             scenarioId={s.id}
-            questionOrder={s.questionOrder}
             askOwnChoice={s.askOwnChoice}
             askConfidence={s.askConfidence}
-            isLast={current === s.total}
+            isLast={isLast}
           />
         </div>
       </div>

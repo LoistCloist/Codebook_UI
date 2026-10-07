@@ -18,7 +18,10 @@ export default async function AdminPage() {
     { label: "Started", value: stats.started },
     { label: "Completed", value: stats.completed },
     { label: "In progress", value: stats.inProgress },
-    { label: "Comprehension-check failures", value: stats.comprehensionFailures },
+    {
+      label: "Comprehension-check failures",
+      value: stats.comprehensionFailures,
+    },
     { label: "Duplicate groups", value: stats.duplicateGroups.length },
     { label: "Straight-liners", value: stats.straightLiners.length },
   ];
@@ -47,8 +50,14 @@ export default async function AdminPage() {
         </h2>
         <ul className="mt-3 flex flex-wrap gap-3">
           {[
-            { href: "/admin/export/responses.csv", label: "Download responses.csv" },
-            { href: "/admin/export/participants.csv", label: "Download participants.csv" },
+            {
+              href: "/admin/export/responses.csv",
+              label: "Download responses.csv",
+            },
+            {
+              href: "/admin/export/participants.csv",
+              label: "Download participants.csv",
+            },
           ].map((l) => (
             <li key={l.href}>
               {/* Plain <a>: file downloads must not go through client-side navigation. */}
@@ -102,7 +111,7 @@ export default async function AdminPage() {
           Straight-liners
         </h2>
         <p className="mt-1 text-sm text-neutral-700">
-          Completed participants who gave the same answer for every utilitarian and Kantian question.
+          Completed participants who gave the same answer for every question.
         </p>
         {stats.straightLiners.length === 0 ? (
           <p className="mt-3">None.</p>

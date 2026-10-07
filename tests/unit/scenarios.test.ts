@@ -66,7 +66,10 @@ describe("scenario loader", () => {
     ["not an array", { id: "s01" }],
     ["invalid choice", [valid({ answerKey: { utilitarian: ["brake" as never], kantian: ["maintain"] } })]],
     ["empty answerKey array", [valid({ answerKey: { utilitarian: [], kantian: ["maintain"] } })]],
-    ["repeated choice in answerKey", [valid({ answerKey: { utilitarian: ["maintain", "maintain"], kantian: ["maintain"] } })]],
+    [
+      "repeated choice in answerKey",
+      [valid({ answerKey: { utilitarian: ["maintain", "maintain"], kantian: ["maintain"] } })],
+    ],
     ["duplicate ids", [valid(), valid()]],
     ["unknown field", [{ ...valid(), extra: 1 }]],
     ["image outside /scenarios/", [valid({ image: "/etc/passwd" })]],
@@ -77,7 +80,7 @@ describe("scenario loader", () => {
     ["empty features list", [valid({ features: [] })]],
     ["actions missing a choice", [{ ...valid(), actions: { maintain: "a", swerve_left: "b" } }]],
     ["actions with an unknown choice", [{ ...valid(), actions: { ...ACTIONS, brake: "d" } }]],
-    ["answerKey with only one theory", [{ ...valid(), answerKey: { utilitarian: ["maintain"] } }]],
+    ["answerKey with only a Kantian key", [{ ...valid(), answerKey: { kantian: ["maintain"] } }]],
   ])("rejects %s", (_name, raw) => {
     expect(() => parseScenarios(raw)).toThrow(/malformed/);
   });

@@ -48,7 +48,7 @@ export type ComprehensionInput = z.infer<typeof ComprehensionInput>;
 export const ResponseInput = z.object({
   scenarioId: z.string(),
   utilitarian: Choice,
-  kantian: Choice,
+  kantian: Choice.optional(), // no longer asked; kept so older clients still validate
   own: Choice.optional(),
   confidence: z.number().int().min(1).max(5).optional(),
 });

@@ -5,22 +5,13 @@
  */
 
 export type FigureType =
-  | "adult"
-  | "child"
-  | "elderly"
-  | "disabled"
-  | "pregnant"
-  | "worker"
-  | "cyclist"
-  | "motorcyclist"
-  | "person";
+  "adult" | "child" | "elderly" | "disabled" | "pregnant" | "worker" | "cyclist" | "motorcyclist" | "person";
 
 /** `label` is the singular noun from the text, e.g. "elderly pedestrian". */
 export type Figure = { type: FigureType; count: number; label: string };
 
 export type Group =
-  | { kind: "people"; figures: Figure[] }
-  | { kind: "vehicle"; vehicle: "car" | "motorcycle"; occupants: number };
+  { kind: "people"; figures: Figure[] } | { kind: "vehicle"; vehicle: "car" | "motorcycle"; occupants: number };
 
 export type Scene = { ahead: Group; left: Group; passengers: number };
 

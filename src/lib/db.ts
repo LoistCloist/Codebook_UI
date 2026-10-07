@@ -16,7 +16,10 @@ function createClient(): PrismaClient {
     idleTimeoutMillis: 10_000,
     // Env var UIs often store newlines as literal "\n".
     ...(env.DATABASE_SSL_CA && {
-      ssl: { ca: env.DATABASE_SSL_CA.replace(/\\n/g, "\n"), rejectUnauthorized: true },
+      ssl: {
+        ca: env.DATABASE_SSL_CA.replace(/\\n/g, "\n"),
+        rejectUnauthorized: true,
+      },
     }),
   });
   // Only warnings/errors: query logging could leak participant data into logs.

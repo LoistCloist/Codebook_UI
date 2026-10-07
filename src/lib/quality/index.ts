@@ -4,8 +4,13 @@
 import { createHash } from "node:crypto";
 import type { Choice } from "@/lib/schemas";
 
-export type QResponse = { scenarioId: string; utilitarian: Choice; kantian: Choice };
-export type AnswerKey = { utilitarian: Choice[]; kantian: Choice[] };
+// The Kantian question is no longer asked; it stays optional so older responses still score.
+export type QResponse = {
+  scenarioId: string;
+  utilitarian: Choice;
+  kantian?: Choice;
+};
+export type AnswerKey = { utilitarian: Choice[]; kantian?: Choice[] };
 
 /** Plain code-unit comparison: locale-independent and deterministic. */
 function compareIds(a: string, b: string): number {
@@ -14,6 +19,7 @@ function compareIds(a: string, b: string): number {
 
 /**
  * Sorted by scenarioId (not display order): "s01:U=maintain,K=swerve_left|s02:...".
+ * The ",K=" part is left out when there is no Kantian answer.
  * Empty input gives "". Throws if a scenarioId appears more than once.
  */
 export function buildAnswerString(rs: QResponse[]): string {
@@ -23,7 +29,7 @@ export function buildAnswerString(rs: QResponse[]): string {
       throw new Error(`buildAnswerString: duplicate scenarioId "${sorted[i].scenarioId}"`);
     }
   }
-  return sorted.map((r) => `${r.scenarioId}:U=${r.utilitarian},K=${r.kantian}`).join("|");
+  return sorted.map((r) => `${r.scenarioId}:U=${r.utilitarian}${r.kantian ? `,K=${r.kantian}` : ""}`).join("|");
 }
 
 /** First 8 hex chars of sha256(answerString). */
@@ -55,20 +61,26 @@ export function findDuplicateGroups(ps: { participantId: string; answerString: s
 }
 
 /**
- * §3.12: true when every utilitarian and Kantian choice across all responses has the
- * same value. False for empty input. (The optional own choice is not considered.)
+ * §3.12: true when every utilitarian and (when present) Kantian choice across all
+ * responses has the same value. False for empty input. (The optional own choice is not considered.)
  */
 export function isStraightLiner(rs: QResponse[]): boolean {
   if (rs.length === 0) return false;
   const first = rs[0].utilitarian;
-  return rs.every((r) => r.utilitarian === first && r.kantian === first);
+  return rs.every((r) => r.utilitarian === first && (r.kantian === undefined || r.kantian === first));
 }
 
-/** A choice is correct if it appears in that theory's answerKey array (multi-correct keys allowed). */
-export function scoreResponse(r: QResponse, key: AnswerKey): { utilitarianCorrect: boolean; kantianCorrect: boolean } {
+/**
+ * A choice is correct if it appears in that theory's answerKey array (multi-correct keys allowed).
+ * kantianCorrect is undefined when there is no Kantian answer or key.
+ */
+export function scoreResponse(
+  r: QResponse,
+  key: AnswerKey,
+): { utilitarianCorrect: boolean; kantianCorrect: boolean | undefined } {
   return {
     utilitarianCorrect: key.utilitarian.includes(r.utilitarian),
-    kantianCorrect: key.kantian.includes(r.kantian),
+    kantianCorrect: r.kantian && key.kantian ? key.kantian.includes(r.kantian) : undefined,
   };
 }
 
@@ -82,7 +94,8 @@ function pct(correct: number, total: number): number {
  * Agreement with the answer key per theory: correct ÷ answered × 100, rounded to
  * 2 decimals (e.g. 66.67).
  * - Responses whose scenarioId is not in `keys` are excluded from both counts.
- * - If no response can be scored, both values are NaN (export as a blank cell).
+ * - Kantian agreement counts only responses with both a Kantian answer and key.
+ * - If no response can be scored, the value is NaN (export as a blank cell).
  */
 export function agreement(
   rs: QResponse[],
@@ -90,13 +103,17 @@ export function agreement(
 ): { utilitarianPct: number; kantianPct: number } {
   let answered = 0;
   let u = 0;
+  let kAnswered = 0;
   let k = 0;
   for (const r of rs) {
     if (!Object.hasOwn(keys, r.scenarioId)) continue;
     const s = scoreResponse(r, keys[r.scenarioId]);
     answered++;
     if (s.utilitarianCorrect) u++;
-    if (s.kantianCorrect) k++;
+    if (s.kantianCorrect !== undefined) {
+      kAnswered++;
+      if (s.kantianCorrect) k++;
+    }
   }
-  return { utilitarianPct: pct(u, answered), kantianPct: pct(k, answered) };
+  return { utilitarianPct: pct(u, answered), kantianPct: pct(k, kAnswered) };
 }

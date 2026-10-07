@@ -14,7 +14,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
     adminEmails: parseAdminEmails(env.ADMIN_EMAILS),
   });
   return {
-    providers: [Google({ clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET })],
+    providers: [
+      Google({
+        clientId: env.GOOGLE_CLIENT_ID,
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
+      }),
+    ],
     secret: env.NEXTAUTH_SECRET,
     // NEXTAUTH_URL is required by env.ts and next-auth rewrites request URLs to it.
     trustHost: true,

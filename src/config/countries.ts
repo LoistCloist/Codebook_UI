@@ -260,7 +260,4 @@ export type CountryCode = (typeof COUNTRIES)[number]["code"];
 export type CountryValue = CountryCode | typeof PREFER_NOT_TO_SAY;
 
 /** Every accepted value for participants.country, for z.enum. */
-export const COUNTRY_VALUES: [CountryValue, ...CountryValue[]] = [
-  PREFER_NOT_TO_SAY,
-  ...COUNTRIES.map((c) => c.code),
-];
+export const COUNTRY_VALUES: [CountryValue, ...CountryValue[]] = [PREFER_NOT_TO_SAY, ...COUNTRIES.map((c) => c.code)];

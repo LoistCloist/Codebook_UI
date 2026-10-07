@@ -33,7 +33,10 @@ export function createCallbacks(deps: CallbackDeps) {
     }
     // Later calls: keep only our two claims (rebuilding also strips anything else).
     if (typeof token.participantHash !== "string" || !token.participantHash) return null;
-    return { participantHash: token.participantHash, isAdmin: token.isAdmin === true };
+    return {
+      participantHash: token.participantHash,
+      isAdmin: token.isAdmin === true,
+    };
   }
 
   function session({ session, token }: { session: Session; token: JWT }): Session {

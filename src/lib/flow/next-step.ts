@@ -22,7 +22,12 @@ export function getNextStep(p: Participant | null, answeredCount: number): Step 
   const total = p.scenarioOrder.length;
   const position = Math.max(0, Math.trunc(answeredCount));
   if (position < total) {
-    return { kind: "scenario", scenarioId: p.scenarioOrder[position], position, total };
+    return {
+      kind: "scenario",
+      scenarioId: p.scenarioOrder[position],
+      position,
+      total,
+    };
   }
   return { kind: "completed" };
 }

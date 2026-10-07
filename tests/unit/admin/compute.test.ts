@@ -24,26 +24,21 @@ vi.mock("@/lib/quality", () => {
       rs.length > 0 && new Set(rs.flatMap((r) => [r.utilitarian, r.kantian])).size === 1,
     scoreResponse: (r: QResponse, k: { utilitarian: string[]; kantian: string[] }) => ({
       utilitarianCorrect: k.utilitarian.includes(r.utilitarian),
-      kantianCorrect: k.kantian.includes(r.kantian),
+      kantianCorrect: k.kantian.includes(r.kantian!),
     }),
     agreement: (rs: QResponse[], keys: Record<string, { utilitarian: string[]; kantian: string[] }>) => {
       const scored = rs.filter((r) => keys[r.scenarioId]);
       const pct = (n: number) => (scored.length ? Math.round((n / scored.length) * 10000) / 100 : NaN);
       return {
         utilitarianPct: pct(scored.filter((r) => keys[r.scenarioId].utilitarian.includes(r.utilitarian)).length),
-        kantianPct: pct(scored.filter((r) => keys[r.scenarioId].kantian.includes(r.kantian)).length),
+        kantianPct: pct(scored.filter((r) => keys[r.scenarioId].kantian.includes(r.kantian!)).length),
       };
     },
   };
 });
 
-const {
-  PARTICIPANTS_HEADER,
-  RESPONSES_HEADER,
-  computeStats,
-  participantRows,
-  responseRows,
-} = await import("@/lib/admin/compute");
+const { PARTICIPANTS_HEADER, RESPONSES_HEADER, computeStats, participantRows, responseRows } =
+  await import("@/lib/admin/compute");
 type AdminParticipant = import("@/lib/admin/compute").AdminParticipant;
 type Choice = "maintain" | "swerve_left" | "swerve_right";
 
@@ -114,7 +109,15 @@ const people: AdminParticipant[] = [
     responses: [resp("s02", 0, "maintain", "maintain"), resp("s01", 1)],
   }),
   // e: in progress, before demographics/primer; nothing answered
-  participant("e", { ageRange: null, country: null, drives: null, ethicsCoursework: null, demographicsAt: null, comprehensionPassed: null, primerCompletedAt: null }),
+  participant("e", {
+    ageRange: null,
+    country: null,
+    drives: null,
+    ethicsCoursework: null,
+    demographicsAt: null,
+    comprehensionPassed: null,
+    primerCompletedAt: null,
+  }),
   // f: completed, answered a scenario that has since been removed from the key file
   participant("f", {
     completedAt: at(800),
@@ -201,8 +204,18 @@ describe("participantRows", () => {
   });
 
   it("reports status, progress and total time", () => {
-    expect(rows.a).toMatchObject({ status: "completed", scenarios_answered: 2, scenarios_total: 2, total_time_sec: 600 });
-    expect(rows.d).toMatchObject({ status: "in_progress", scenarios_answered: 1, total_time_sec: null, completed_at: null });
+    expect(rows.a).toMatchObject({
+      status: "completed",
+      scenarios_answered: 2,
+      scenarios_total: 2,
+      total_time_sec: 600,
+    });
+    expect(rows.d).toMatchObject({
+      status: "in_progress",
+      scenarios_answered: 1,
+      total_time_sec: null,
+      completed_at: null,
+    });
   });
 
   it("flags duplicates and straight-lining only for completed participants", () => {

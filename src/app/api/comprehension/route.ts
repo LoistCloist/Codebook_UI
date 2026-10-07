@@ -18,7 +18,10 @@ export async function POST(req: Request): Promise<Response> {
   if (!guard.ok) return guard.response;
 
   const parsed = ComprehensionInput.safeParse(guard.body);
-  if (!parsed.success) return fail(422, "validation", { fields: issueFields(parsed.error.issues) });
+  if (!parsed.success)
+    return fail(422, "validation", {
+      fields: issueFields(parsed.error.issues),
+    });
 
   const answers = parsed.data.answers;
   const unknown = answers.flatMap((a, i) =>
@@ -30,8 +33,17 @@ export async function POST(req: Request): Promise<Response> {
   const { participant, answeredCount } = guard.state;
   const now = new Date();
   const updated = await db.participant.updateMany({
-    where: { id: participant.id, primerCompletedAt: null, demographicsAt: { not: null }, completedAt: null },
-    data: { comprehensionAnswers: [...answers], comprehensionPassed: passed, primerCompletedAt: now },
+    where: {
+      id: participant.id,
+      primerCompletedAt: null,
+      demographicsAt: { not: null },
+      completedAt: null,
+    },
+    data: {
+      comprehensionAnswers: [...answers],
+      comprehensionPassed: passed,
+      primerCompletedAt: now,
+    },
   });
   if (updated.count === 0) return fail(409, "already_submitted", { next: "/study" });
 

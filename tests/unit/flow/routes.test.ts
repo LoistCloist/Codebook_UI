@@ -2,10 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FakeKnownError, makeDb, post } from "./mocks";
 import { atPrimer, atScenarios, done, participant } from "./fixtures";
 
-const h = vi.hoisted(() => ({ db: undefined as unknown as ReturnType<typeof import("./mocks").makeDb> }));
+const h = vi.hoisted(() => ({
+  db: undefined as unknown as ReturnType<typeof import("./mocks").makeDb>,
+}));
 const session = vi.hoisted(() => ({ getParticipantHash: vi.fn() }));
 
-vi.mock("@/lib/env", () => ({ env: { NEXTAUTH_URL: "http://localhost:3000" } }));
+vi.mock("@/lib/env", () => ({
+  env: { NEXTAUTH_URL: "http://localhost:3000" },
+}));
 vi.mock("@/lib/auth/session", () => session);
 vi.mock("@/lib/auth/consent-cookie", () => ({ readConsentIntent: vi.fn() }));
 vi.mock("@/lib/db", () => ({
@@ -19,8 +23,17 @@ import { POST as postDemographics } from "@/app/api/demographics/route";
 import { POST as postComprehension } from "@/app/api/comprehension/route";
 import { POST as postResponses } from "@/app/api/responses/route";
 
-const demographics = { ageRange: "age_25_34", country: "DE", drives: "yes", ethicsCoursework: "some" };
-const answer = { scenarioId: "s02", utilitarian: "maintain", kantian: "swerve_left" };
+const demographics = {
+  ageRange: "age_25_34",
+  country: "DE",
+  drives: "yes",
+  ethicsCoursework: "some",
+};
+const answer = {
+  scenarioId: "s02",
+  utilitarian: "maintain",
+  kantian: "swerve_left",
+};
 
 function withParticipant(p: ReturnType<typeof participant> | null, answered = 0) {
   h.db.participant.findUnique.mockResolvedValue(p);
@@ -39,7 +52,10 @@ beforeEach(() => {
 describe("shared guard order", () => {
   it("bad origin → 403 before the session is read", async () => {
     const r = await json(await postDemographics(post(demographics, { origin: "https://evil.example" })));
-    expect(r).toEqual({ status: 403, body: { ok: false, error: "bad_origin" } });
+    expect(r).toEqual({
+      status: 403,
+      body: { ok: false, error: "bad_origin" },
+    });
     expect(session.getParticipantHash).not.toHaveBeenCalled();
   });
 
@@ -67,17 +83,22 @@ describe("shared guard order", () => {
 
   it("no participant row → 403 no_participant", async () => {
     withParticipant(null);
-    expect((await json(await postResponses(post(answer)))).body).toMatchObject({ error: "no_participant" });
+    expect((await json(await postResponses(post(answer)))).body).toMatchObject({
+      error: "no_participant",
+    });
   });
 
   it.each([
     ["demographics", postDemographics, demographics],
-    ["comprehension", postComprehension, { answers: ["consequences", "never"] }],
+    ["comprehension", postComprehension, { answers: ["consequences", "fewer"] }],
     ["responses", postResponses, answer],
   ] as const)("completed participant → 409 on %s, no writes", async (_n, handler, body) => {
     withParticipant(participant(done), 3);
     const r = await json(await handler(post(body)));
-    expect(r).toEqual({ status: 409, body: { ok: false, error: "study_completed", next: "/completed" } });
+    expect(r).toEqual({
+      status: 409,
+      body: { ok: false, error: "study_completed", next: "/completed" },
+    });
     expect(h.db.participant.updateMany).not.toHaveBeenCalled();
     expect(h.db.response.updateMany).not.toHaveBeenCalled();
   });
@@ -85,7 +106,10 @@ describe("shared guard order", () => {
   it("wrong step → 403 is checked before the body is validated", async () => {
     withParticipant(participant()); // on demographics
     const r = await json(await postResponses(post("{not json")));
-    expect(r).toEqual({ status: 403, body: { ok: false, error: "wrong_step", next: "/demographics" } });
+    expect(r).toEqual({
+      status: 403,
+      body: { ok: false, error: "wrong_step", next: "/demographics" },
+    });
   });
 
   it("invalid JSON → 422 invalid_json", async () => {
@@ -103,7 +127,11 @@ describe("POST /api/demographics", () => {
       body: { ok: true, next: "/primer" },
     });
     const call = h.db.participant.updateMany.mock.calls[0][0];
-    expect(call.where).toMatchObject({ id: "p1", demographicsAt: null, completedAt: null });
+    expect(call.where).toMatchObject({
+      id: "p1",
+      demographicsAt: null,
+      completedAt: null,
+    });
     expect(call.data).toMatchObject(demographics);
     expect(call.data.demographicsAt).toBeInstanceOf(Date);
   });
@@ -133,31 +161,37 @@ describe("POST /api/demographics", () => {
 describe("POST /api/comprehension", () => {
   it("before demographics → 403", async () => {
     withParticipant(participant());
-    expect((await postComprehension(post({ answers: ["consequences", "never"] }))).status).toBe(403);
+    expect((await postComprehension(post({ answers: ["consequences", "fewer"] }))).status).toBe(403);
   });
 
   it.each([
-    [["consequences", "never"], true],
-    [["duty", "never"], false],
+    [["consequences", "fewer"], true],
+    [["duty", "fewer"], false],
   ])("stores %o, passed=%s, and completes the primer", async (answers, passed) => {
     withParticipant(participant(atPrimer));
     h.db.participant.updateMany.mockResolvedValue({ count: 1 });
     expect((await json(await postComprehension(post({ answers })))).body).toEqual({ ok: true, next: "/scenario" });
     const call = h.db.participant.updateMany.mock.calls[0][0];
     expect(call.where).toMatchObject({ primerCompletedAt: null });
-    expect(call.data).toMatchObject({ comprehensionAnswers: answers, comprehensionPassed: passed });
+    expect(call.data).toMatchObject({
+      comprehensionAnswers: answers,
+      comprehensionPassed: passed,
+    });
     expect(call.data.primerCompletedAt).toBeInstanceOf(Date);
   });
 
   it("an answer that isn't an option value → 422", async () => {
     withParticipant(participant(atPrimer));
     const r = await json(await postComprehension(post({ answers: ["consequences", "Its overall consequences"] })));
-    expect(r).toEqual({ status: 422, body: { ok: false, error: "validation", fields: ["answers.1"] } });
+    expect(r).toEqual({
+      status: 422,
+      body: { ok: false, error: "validation", fields: ["answers.1"] },
+    });
   });
 
   it("second submission → 409", async () => {
     withParticipant(participant(atScenarios));
-    expect((await postComprehension(post({ answers: ["consequences", "never"] }))).status).toBe(409);
+    expect((await postComprehension(post({ answers: ["consequences", "fewer"] }))).status).toBe(409);
   });
 });
 
@@ -173,11 +207,36 @@ describe("POST /api/responses", () => {
   it("saves the current scenario with a conditional update", async () => {
     withParticipant(participant(atScenarios), 0);
     h.db.response.updateMany.mockResolvedValue({ count: 1 });
-    expect((await json(await postResponses(post(answer)))).body).toEqual({ ok: true, next: "/scenario" });
+    expect((await json(await postResponses(post(answer)))).body).toEqual({
+      ok: true,
+      next: "/scenario",
+    });
     const call = h.db.response.updateMany.mock.calls[0][0];
-    expect(call.where).toEqual({ participantId: "p1", scenarioId: "s02", position: 0, answeredAt: null });
-    expect(call.data).toMatchObject({ utilitarianChoice: "maintain", kantianChoice: "swerve_left" });
+    expect(call.where).toEqual({
+      participantId: "p1",
+      scenarioId: "s02",
+      position: 0,
+      answeredAt: null,
+    });
+    expect(call.data).toMatchObject({
+      utilitarianChoice: "maintain",
+      kantianChoice: "swerve_left",
+    });
     expect(h.db.participant.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("saves a response without a Kantian answer as null", async () => {
+    withParticipant(participant(atScenarios), 0);
+    h.db.response.updateMany.mockResolvedValue({ count: 1 });
+    const { kantian: _omit, ...utilOnly } = answer;
+    expect((await json(await postResponses(post(utilOnly)))).body).toEqual({
+      ok: true,
+      next: "/scenario",
+    });
+    expect(h.db.response.updateMany.mock.calls[0][0].data).toMatchObject({
+      utilitarianChoice: "maintain",
+      kantianChoice: null,
+    });
   });
 
   it("last scenario → sets completed_at in the same transaction and returns /debrief", async () => {
@@ -188,7 +247,10 @@ describe("POST /api/responses", () => {
     const r = await json(await postResponses(post({ ...answer, scenarioId: "s03" })));
     expect(r.body).toEqual({ ok: true, next: "/debrief" });
     expect(h.db.$transaction).toHaveBeenCalledOnce();
-    expect(h.db.participant.updateMany.mock.calls[0][0].where).toEqual({ id: "p1", completedAt: null });
+    expect(h.db.participant.updateMany.mock.calls[0][0].where).toEqual({
+      id: "p1",
+      completedAt: null,
+    });
   });
 
   it("out-of-order scenarioId → 403", async () => {
@@ -227,7 +289,10 @@ describe("POST /api/responses", () => {
   it("own/confidence while their flags are off → 422", async () => {
     withParticipant(participant(atScenarios), 0);
     const r = await json(await postResponses(post({ ...answer, own: "maintain", confidence: 3 })));
-    expect(r).toEqual({ status: 422, body: { ok: false, error: "validation", fields: ["own", "confidence"] } });
+    expect(r).toEqual({
+      status: 422,
+      body: { ok: false, error: "validation", fields: ["own", "confidence"] },
+    });
   });
 
   it("invalid choice → 422", async () => {
