@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
 import { getDashboardStats } from "@/lib/admin/stats";
+import { CHOICE_OPTIONS } from "@/config/study";
+
+/** Fixed decimals, or an em dash when the value can't be computed yet (NaN). */
+const fmt = (n: number, digits: number) => (Number.isFinite(n) ? n.toFixed(digits) : "—");
+const choiceLabel = (c: string | null) => CHOICE_OPTIONS.find((o) => o.value === c)?.label ?? "—";
 
 export const metadata: Metadata = {
   title: "Admin dashboard",
@@ -42,6 +47,117 @@ export default async function AdminPage() {
             </div>
           ))}
         </dl>
+      </section>
+
+      <section aria-labelledby="rel-heading" className="mt-8">
+        <h2 id="rel-heading" className="text-lg font-semibold">
+          Inter-rater reliability (utilitarian question)
+        </h2>
+        <p className="mt-1 text-sm text-neutral-700">
+          Participants are the raters and scenarios the items, using every answer saved so far. 1 means
+          perfect agreement and 0 means chance level; Krippendorff&apos;s α ≥ 0.800 is commonly treated as
+          reliable and ≥ 0.667 as tentative. “Excluding flagged” leaves out duplicate groups,
+          straight-liners and comprehension-check failures. A dash means there aren&apos;t yet 2 answers
+          for any scenario.
+        </p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-neutral-400">
+                <th scope="col" className="py-2 pr-4">
+                  Responses
+                </th>
+                <th scope="col" className="py-2 pr-4">
+                  Krippendorff&apos;s α
+                </th>
+                <th scope="col" className="py-2 pr-4">
+                  Fleiss&apos; κ
+                </th>
+                <th scope="col" className="py-2 pr-4">
+                  % agreement
+                </th>
+                <th scope="col" className="py-2 pr-4">
+                  Participants
+                </th>
+                <th scope="col" className="py-2 pr-4">
+                  Scenarios
+                </th>
+                <th scope="col" className="py-2">
+                  Ratings
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { label: "All answered", g: stats.reliability.all },
+                { label: "Excluding flagged", g: stats.reliability.unflagged },
+              ].map(({ label, g }) => (
+                <tr key={label} className="border-b border-neutral-200 tabular-nums">
+                  <th scope="row" className="py-2 pr-4 font-medium">
+                    {label}
+                  </th>
+                  <td className="py-2 pr-4 text-base font-semibold">{fmt(g.alpha, 3)}</td>
+                  <td className="py-2 pr-4">{fmt(g.kappa, 3)}</td>
+                  <td className="py-2 pr-4">{fmt(g.percentAgreement, 1)}</td>
+                  <td className="py-2 pr-4">{g.participants}</td>
+                  <td className="py-2 pr-4">{g.units}</td>
+                  <td className="py-2">{g.ratings}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="mt-6 font-semibold">Agreement by scenario</h3>
+        <p className="mt-1 text-sm text-neutral-700">
+          All answered responses, lowest agreement first. % agreement is the share of participant pairs who
+          chose the same action.
+        </p>
+        {stats.reliability.scenarios.length === 0 ? (
+          <p className="mt-3">No answers yet.</p>
+        ) : (
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-neutral-400">
+                  <th scope="col" className="py-2 pr-4">
+                    Scenario
+                  </th>
+                  <th scope="col" className="py-2 pr-4">
+                    Ratings
+                  </th>
+                  <th scope="col" className="py-2 pr-4">
+                    % agreement
+                  </th>
+                  <th scope="col" className="py-2 pr-4">
+                    Most common answer
+                  </th>
+                  <th scope="col" className="py-2">
+                    Matches key
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.reliability.scenarios.map((s) => (
+                  <tr key={s.scenarioId} className="border-b border-neutral-200 align-top tabular-nums">
+                    <td className="py-2 pr-4">
+                      <span className="font-mono">{s.scenarioId}</span>
+                      {s.title !== s.scenarioId && <span className="block text-neutral-700">{s.title}</span>}
+                    </td>
+                    <td className="py-2 pr-4">{s.n}</td>
+                    <td className="py-2 pr-4">{fmt(s.pairwisePct, 1)}</td>
+                    <td className="py-2 pr-4">
+                      {choiceLabel(s.mode)} ({fmt(s.modeShare, 0)}%)
+                    </td>
+                    <td className="py-2">
+                      {s.modeMatchesKey === null ? "—" : s.modeMatchesKey ? "Yes" : "No"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="exports-heading" className="mt-8">

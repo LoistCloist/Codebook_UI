@@ -10,10 +10,31 @@ import {
   type AnswerKey,
   type QResponse,
 } from "@/lib/quality";
+import { reliabilitySummary, unitAgreement, type ReliabilitySummary } from "@/lib/quality/reliability";
+import type { Choice } from "@/lib/schemas";
 import type { CsvCell } from "./csv";
 
 export type AdminParticipant = Participant & { responses: Response[] };
 export type AnswerKeys = Record<string, AnswerKey>;
+
+export type ReliabilityGroup = ReliabilitySummary & {
+  /** Participants with at least one answered response in this group. */
+  participants: number;
+};
+
+export type ScenarioAgreement = {
+  scenarioId: string;
+  title: string;
+  /** Answered ratings for this scenario. */
+  n: number;
+  /** Share of agreeing participant pairs, 0–100; NaN with fewer than 2 ratings. */
+  pairwisePct: number;
+  mode: Choice | null;
+  /** Share of ratings that chose `mode`, 0–100. */
+  modeShare: number;
+  /** null when the scenario has no answer key or no ratings. */
+  modeMatchesKey: boolean | null;
+};
 
 export type DashboardStats = {
   started: number;
@@ -22,6 +43,14 @@ export type DashboardStats = {
   comprehensionFailures: number;
   duplicateGroups: { groupId: string; participantIds: string[] }[];
   straightLiners: string[];
+  /** Inter-rater reliability of the utilitarian question: participants are raters, scenarios units. */
+  reliability: {
+    all: ReliabilityGroup;
+    /** Excludes duplicate-group members, straight-liners and comprehension failures. */
+    unflagged: ReliabilityGroup;
+    /** Every scenario with at least one answer, lowest agreement first. */
+    scenarios: ScenarioAgreement[];
+  };
 };
 
 type Analysed = {
@@ -70,7 +99,58 @@ export function analyse(participants: AdminParticipant[], keys: AnswerKeys): Ana
   });
 }
 
-export function computeStats(participants: AdminParticipant[], keys: AnswerKeys): DashboardStats {
+function ratingsByScenario(rows: Analysed[]): Map<string, Choice[]> {
+  const units = new Map<string, Choice[]>();
+  for (const r of rows) {
+    for (const q of r.answered) units.set(q.scenarioId, [...(units.get(q.scenarioId) ?? []), q.utilitarian]);
+  }
+  return units;
+}
+
+function reliabilityGroup(rows: Analysed[]): ReliabilityGroup {
+  return {
+    ...reliabilitySummary(ratingsByScenario(rows)),
+    participants: rows.filter((r) => r.answered.length > 0).length,
+  };
+}
+
+const isFlagged = (r: Analysed) =>
+  r.duplicateGroup !== null || r.straightLiner === true || r.p.comprehensionPassed === false;
+
+function computeReliability(
+  rows: Analysed[],
+  keys: AnswerKeys,
+  titles: Record<string, string>,
+): DashboardStats["reliability"] {
+  const scenarios = [...ratingsByScenario(rows)].map(([scenarioId, ratings]): ScenarioAgreement => {
+    const a = unitAgreement(ratings);
+    const mode = a.mode as Choice | null;
+    const key = Object.hasOwn(keys, scenarioId) ? keys[scenarioId] : undefined;
+    return {
+      scenarioId,
+      title: titles[scenarioId] ?? scenarioId,
+      n: a.n,
+      pairwisePct: a.pairwisePct,
+      mode,
+      modeShare: a.modeShare,
+      modeMatchesKey: key && mode ? key.utilitarian.includes(mode) : null,
+    };
+  });
+  // Lowest agreement first; scenarios that can't be scored yet (NaN) go last.
+  const rank = (s: ScenarioAgreement) => (Number.isNaN(s.pairwisePct) ? Infinity : s.pairwisePct);
+  scenarios.sort((a, b) => rank(a) - rank(b) || (a.scenarioId < b.scenarioId ? -1 : 1));
+  return {
+    all: reliabilityGroup(rows),
+    unflagged: reliabilityGroup(rows.filter((r) => !isFlagged(r))),
+    scenarios,
+  };
+}
+
+export function computeStats(
+  participants: AdminParticipant[],
+  keys: AnswerKeys,
+  titles: Record<string, string> = {},
+): DashboardStats {
   const rows = analyse(participants, keys);
   const completed = rows.filter((r) => r.p.completedAt).length;
   const groups = new Map<string, string[]>();
@@ -89,6 +169,7 @@ export function computeStats(participants: AdminParticipant[], keys: AnswerKeys)
       .filter((r) => r.straightLiner)
       .map((r) => r.p.id)
       .sort(),
+    reliability: computeReliability(rows, keys, titles),
   };
 }
 

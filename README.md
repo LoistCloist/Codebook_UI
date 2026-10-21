@@ -183,7 +183,18 @@ After a build, `grep -r answerKey .next/static` should print nothing.
 
 `/admin` is available only to signed-in Google accounts listed in `ADMIN_EMAILS`; everyone else
 gets a 404. It shows started / completed / in-progress counts, comprehension-check failures,
-duplicate groups (with participant IDs) and straight-liners, plus two CSV downloads:
+duplicate groups (with participant IDs) and straight-liners, inter-rater reliability of the
+utilitarian question, and two CSV downloads.
+
+**Reliability** is recomputed on every page load from all answers saved so far (participants are the
+raters, scenarios the items, the three actions nominal categories). It shows Krippendorff's α
+(nominal; handles participants who haven't answered every scenario), Fleiss' κ and mean pairwise
+% agreement, both for all answered responses and excluding flagged participants (duplicate groups,
+straight-liners, comprehension-check failures). A per-scenario table lists each scenario's number of
+answers, % agreement, most common answer and whether that answer matches the key, lowest agreement
+first. Scenarios need at least 2 answers to count. The code is in `src/lib/quality/reliability.ts`.
+
+CSV downloads:
 
 - `/admin/export/responses.csv`: one row per response (including served-but-unanswered rows), with
   the internal participant ID, scenario, choices, question order, 0-based position, time on scenario

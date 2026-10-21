@@ -143,6 +143,7 @@ describe("computeStats", () => {
   });
 
   it("handles an empty study", () => {
+    const empty = { alpha: NaN, kappa: NaN, percentAgreement: NaN, units: 0, ratings: 0, participants: 0 };
     expect(computeStats([], keys)).toEqual({
       started: 0,
       completed: 0,
@@ -150,7 +151,32 @@ describe("computeStats", () => {
       comprehensionFailures: 0,
       duplicateGroups: [],
       straightLiners: [],
+      reliability: { all: empty, unflagged: empty, scenarios: [] },
     });
+  });
+});
+
+describe("computeStats reliability", () => {
+  const r = computeStats(people, keys, { s01: "First" }).reliability;
+
+  it("uses every answered utilitarian choice, including in-progress participants", () => {
+    // s01: sr, sr, m, sl  ·  s02: sr, sr, m, m  ·  "gone" has one rating and is ignored
+    expect(r.all).toMatchObject({ units: 2, ratings: 8, participants: 5, percentAgreement: 25 });
+    expect(r.all.alpha).toBeCloseTo(1 - 42 / 38, 6);
+    expect(r.all.kappa).toBeCloseTo((0.25 - 0.40625) / 0.59375, 6);
+  });
+
+  it("drops duplicate-group members, straight-liners and comprehension failures", () => {
+    // a, b (duplicates) and c are flagged; d and f leave no scenario with 2 ratings
+    expect(r.unflagged).toMatchObject({ units: 0, ratings: 0, participants: 2 });
+    expect(r.unflagged.alpha).toBeNaN();
+  });
+
+  it("lists scenarios lowest agreement first, with the most common answer and key match", () => {
+    expect(r.scenarios.map((s) => s.scenarioId)).toEqual(["s01", "s02", "gone"]);
+    expect(r.scenarios[0]).toMatchObject({ title: "First", n: 4, mode: "swerve_right", modeShare: 50, modeMatchesKey: true });
+    expect(r.scenarios[1]).toMatchObject({ title: "s02", mode: "maintain", modeMatchesKey: false });
+    expect(r.scenarios[2]).toMatchObject({ n: 1, pairwisePct: NaN, modeMatchesKey: null });
   });
 });
 
